@@ -1,4 +1,5 @@
 import pygame
+from math import sqrt
 
 if __name__ == '__main__':
     pygame.init()
@@ -7,7 +8,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     screen2 = pygame.Surface(screen.get_size())
     running = True
-    v = 200
+    v = 600
     clock = pygame.time.Clock()
     d = False
     x, y = 0, 0
@@ -21,7 +22,8 @@ if __name__ == '__main__':
                 d = True
                 x, y = event.pos
                 x, y = x - 150, 600 - y
-                balls.append([150, 595, x / y, -1])
+                x, y = x / sqrt(x ** 2 + y ** 2), y / sqrt(x ** 2 + y ** 2)
+                balls.append([150, 595, x, -y])
         if d:
             screen.fill(pygame.Color('black'))
             c = clock.tick()
