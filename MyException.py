@@ -1,0 +1,2 @@
+class ErrorAddingToGroup(Exception):
+    pass
