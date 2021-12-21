@@ -1,3 +1,5 @@
+from math import sqrt
+
 import pygame
 
 
@@ -11,6 +13,7 @@ class Board:
         self.left = 50
         self.top = 50
         self.cell_size = 50
+
         self.debug = debug
         self.balls = []
 
@@ -20,7 +23,7 @@ class Board:
         self.top = top
         self.cell_size = cell_size
 
-    def render(self, screen, clock, draw):
+    def render(self, screen, clock, draw, t=None):
         for i in range(self.height):
             for j in range(self.width):
                 x = self.left + self.cell_size * j
@@ -36,43 +39,37 @@ class Board:
                     pygame.draw.rect(screen, pygame.Color('white'), (x, y, self.cell_size, self.cell_size))
         pygame.draw.rect(screen, (200, 200, 200),
                          (self.left, self.top, self.cell_size * self.width, self.cell_size * self.height), width=1)
-        if draw:
+        if draw == 2:
             c = clock.tick()
             if c > 10:
                 c = 1
             for i in range(len(self.balls)):
-                pygame.draw.circle(screen, pygame.Color('white'), (int(self.balls[i].x), int(self.balls[i].y)),
-                                   self.balls[i].r)
-                self.balls[i].x += self.balls[i].x0 * self.balls[i].v * c / 1000
-                self.balls[i].y += self.balls[i].y0 * self.balls[i].v * c / 1000
-                if int(self.balls[i].x) <= self.balls[i].r + self.left:
-                    self.balls[i].x0 = abs(self.balls[i].x0)
-                if int(self.balls[i].x) >= ((self.left + self.cell_size * self.width) - self.balls[i].r):
-                    self.balls[i].x0 = -abs(self.balls[i].x0)
-                if int(self.balls[i].y) <= self.balls[i].r + self.top:
-                    self.balls[i].y0 = abs(self.balls[i].y0)
-                if int(self.balls[i].y) >= ((self.top + self.cell_size * self.height) - self.balls[i].r - 1):
-                    self.balls[i].x0 = 0
-                    self.balls[i].y0 = 0
+                if self.balls[i].x0 and self.balls[i].y0:
+                    pygame.draw.circle(screen, pygame.Color('white'), (int(self.balls[i].x), int(self.balls[i].y)),
+                                       self.balls[i].r)
+                    self.balls[i].x += self.balls[i].x0 * self.balls[i].v * c / 1000
+                    self.balls[i].y += self.balls[i].y0 * self.balls[i].v * c / 1000
+                    if int(self.balls[i].x) <= self.balls[i].r + self.left:
+                        self.balls[i].x0 = abs(self.balls[i].x0)
+                    if int(self.balls[i].x) >= ((self.left + self.cell_size * self.width) - self.balls[i].r):
+                        self.balls[i].x0 = -abs(self.balls[i].x0)
+                    if int(self.balls[i].y) <= self.balls[i].r + self.top:
+                        self.balls[i].y0 = abs(self.balls[i].y0)
+                    if int(self.balls[i].y) >= ((self.top + self.cell_size * self.height) - self.balls[i].r - 1):
+                        self.balls[i].x0 = 0
+                        self.balls[i].y0 = 0
+        elif draw == 1:
+            x0 = t[0]
+            y0 = t[1]
+            x0, y0 = x0 - (self.left + self.width * self.cell_size // 2), self.top + self.height * self.cell_size - y0
+            x0, y0 = 150 * x0 / sqrt(x0 ** 2 + y0 ** 2), 150 * y0 / sqrt(x0 ** 2 + y0 ** 2)
+            x0, y0 = x0 + (self.left + self.width * self.cell_size // 2), self.top + self.height * self.cell_size - y0
+            pygame.draw.line(screen, (30, 30, 30),
+                             (self.left + self.width * self.cell_size // 2,
+                              self.top + self.height * self.cell_size - 5 - 1), (int(x0), int(y0)), width=1)
 
-    def get_click(self, mouse_pos):
-        cell = self.get_cell(mouse_pos)
-        self.on_click(cell)
-
-    def get_cell(self, mouse_pos):
-        for i in range(self.height):
-            for j in range(self.width):
-                x = self.left + self.cell_size * j
-                y = self.top + self.cell_size * i
-                if (mouse_pos[1] in range(y, y + self.cell_size) and mouse_pos[0] in range(x, x + self.cell_size)) and (
-                        1 < i < self.height - 1):
-                    return j, i
-        return None
-
-    def on_click(self, cell):
-        if cell is not None:
-            self.board[cell[1]][cell[0]] *= -1
-            for i in range(self.width):
-                self.board[cell[1]][i] *= -1
-            for j in range(self.height):
-                self.board[j][cell[0]] *= -1
+    def on_click(self):
+        for i in self.balls:
+            if i.x0 != 0 and i.y0 != 0:
+                return False
+        return True
