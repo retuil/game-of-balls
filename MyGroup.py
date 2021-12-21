@@ -10,6 +10,7 @@ class MyGroup(pygame.sprite.Group):
         super().__init__(*sprites)
         self.indent = indent
         self.width_sprites, self.height_sprites = self.sprites_size = sprites_size
+        self.sorted_sprites = self.sort_sprites()
 
     def add(self, *sprites):
         sprites_pos = list(map(lambda x: x.pos_in_group, list(sprites)))
@@ -18,12 +19,14 @@ class MyGroup(pygame.sprite.Group):
                 raise ErrorAddingToGroup('В группе добавляемых спрайтов есть спрайты с одинаковой позицией')
             self.update(sprite_pos=sprite_pos, change_position='увеличение')
         super().add(*sprites)
+        self.sorted_sprites = self.sort_sprites()
 
     def remove(self, *sprites):
         sprites_pos = list(map(lambda x: x.pos_in_group, list(sprites)))
         for sprite_pos in sprites_pos:
             self.update(sprite_pos=sprite_pos, change_position='уменьшение')
         super().remove(*sprites)
+        self.sorted_sprites = self.sort_sprites()
 
     def sort_sprites(self):
         sprite_list = self.sprites()
@@ -31,4 +34,4 @@ class MyGroup(pygame.sprite.Group):
             for n_sprite in range(len(sprite_list)):
                 if sprite_list[n_sprite].pos_in_group > sprite_list[n_sprite + 1].pos_in_group:
                     sprite_list[n_sprite], sprite_list[n_sprite + 1] = sprite_list[n_sprite + 1], sprite_list[n_sprite]
-        return MyGroup(*sprite_list, indent=self.indent, sprites_size=self.sprites_size)
+        return sprite_list
