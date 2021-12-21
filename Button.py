@@ -1,6 +1,7 @@
 import pygame
 from MyException import *
 from MyGroup import MyGroup
+from HelpFunction import HelpFunction
 
 
 class Button(pygame.sprite.Sprite):
@@ -18,6 +19,12 @@ class Button(pygame.sprite.Sprite):
                 raise ErrorInitSprite('Отсутствуют данные о размере спрайта')
         else:
             self.width, self.height = self.size = size  #TODO: решить проблему определения позиции спрайта с разным размером других спрайтов
+        if text:
+            self.text = text
+        if image:
+            self.image = HelpFunction.load_image(image)     #Передать только имя файла, лежащего в папке data
+        if color:
+            self.color = pygame.Color(color)
 
 
     def update(self, *args, **kwargs):

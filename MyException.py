@@ -4,3 +4,7 @@ class ErrorAddingToGroup(Exception):
 
 class ErrorInitSprite(Exception):
     pass
+
+
+class ErrorLoadImage(Exception):
+    pass
