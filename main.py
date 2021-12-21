@@ -2,25 +2,34 @@ import pygame
 from board import Board
 from ball import Ball
 
-
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 1000, 1000
     screen = pygame.display.set_mode(size)
-    board = Board(8, 11)
+    board = Board(7, 11)
     board.set_view(100, 100, 50)
     running = True
     clock = pygame.time.Clock()
-    draw = False
+    draw = 0
+    t = None
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                draw = True
-                x0, y0 = event.pos
-                board.balls.append(Ball(x0, y0, board, 5))
+                if board.on_click():
+                    draw = 1
+                    t = event.pos
+            if event.type == pygame.MOUSEMOTION and draw == 1:
+                if board.on_click():
+                    t = event.pos
+            if event.type == pygame.MOUSEBUTTONUP:
+                if board.on_click():
+                    draw = 2
+                    x0, y0 = event.pos
+                    board.balls.append(Ball(x0, y0, board, 5))
+                    t = None
         screen.fill((0, 0, 0))
-        board.render(screen, clock, draw)
+        board.render(screen, clock, draw, t)
         pygame.display.flip()
     pygame.quit()
