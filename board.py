@@ -4,20 +4,20 @@ import pygame
 
 
 class Board:
-    # создание поля
     def __init__(self, width, height, debug=False):
         self.width = width
         self.height = height
         self.board = [[-1] * width for _ in range(height)]
-        # значения по умолчанию
+
         self.left = 50
         self.top = 50
         self.cell_size = 50
 
         self.debug = debug
-        self.balls = []
 
-    # настройка внешнего вида
+        self.balls = []
+        self.all_sprites = pygame.sprite.Group()
+
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
@@ -43,21 +43,18 @@ class Board:
             c = clock.tick()
             if c > 10:
                 c = 1
+            self.all_sprites.draw(screen)
+            self.all_sprites.update(c)
             for i in range(len(self.balls)):
-                if self.balls[i].x0 and self.balls[i].y0:
-                    pygame.draw.circle(screen, pygame.Color('white'), (int(self.balls[i].x), int(self.balls[i].y)),
-                                       self.balls[i].r)
-                    self.balls[i].x += self.balls[i].x0 * self.balls[i].v * c / 1000
-                    self.balls[i].y += self.balls[i].y0 * self.balls[i].v * c / 1000
-                    if int(self.balls[i].x) <= self.balls[i].r + self.left:
-                        self.balls[i].x0 = abs(self.balls[i].x0)
-                    if int(self.balls[i].x) >= ((self.left + self.cell_size * self.width) - self.balls[i].r):
-                        self.balls[i].x0 = -abs(self.balls[i].x0)
-                    if int(self.balls[i].y) <= self.balls[i].r + self.top:
-                        self.balls[i].y0 = abs(self.balls[i].y0)
-                    if int(self.balls[i].y) >= ((self.top + self.cell_size * self.height) - self.balls[i].r - 1):
-                        self.balls[i].x0 = 0
-                        self.balls[i].y0 = 0
+                if self.balls[i].rect.x <= self.left:
+                    self.balls[i].x0 = abs(self.balls[i].x0)
+                if self.balls[i].rect.x + 2 * self.balls[i].r >= (self.left + self.cell_size * self.width):
+                    self.balls[i].x0 = -abs(self.balls[i].x0)
+                if self.balls[i].rect.y <= self.top:
+                    self.balls[i].y0 = abs(self.balls[i].y0)
+                if self.balls[i].rect.y + 2 * self.balls[i].r >= ((self.top + self.cell_size * self.height) - 1):
+                    self.balls[i].x0 = 0
+                    self.balls[i].y0 = 0
         elif draw == 1:
             x0 = t[0]
             y0 = t[1]
