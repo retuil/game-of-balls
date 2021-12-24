@@ -33,6 +33,7 @@ class Ball(pygame.sprite.Sprite):
         self.v = 800
         self.r = r
         board.all_sprites.add(self)
+        board.balls_sprites.add(self)
 
     def update(self, c):
         self.x1 += self.x0 * self.v * c / 1000
