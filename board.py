@@ -5,18 +5,18 @@ import pygame
 from box import Box
 
 
-def create_lvl(board, lvl):
-    if lvl is not None:
-        for i, s in enumerate(lvl):
-            board.lvl.append([])
+def create_lvl(board, level):
+    if level is not None:
+        for i, s in enumerate(level):
+            board.level.append([])
             for j, el in enumerate(s.rstrip().split(',')):
                 if el == '.':
-                    board.lvl[-1].append(None)
+                    board.level[-1].append(None)
                 else:
-                    q = Box(j, i + 3 - len(lvl), board, int(el))
-                    board.lvl[-1].append(q)
+                    q = Box(j, i + 3 - len(level), board, int(el))
+                    board.level[-1].append(q)
                     board.box_sprites.add(q)
-        for i, el in enumerate(board.lvl[-1]):
+        for i, el in enumerate(board.level[-1]):
             if el is not None:
                 board.all_sprites.add(el)
 
@@ -39,7 +39,7 @@ class Board:
         self.balls_sprites = pygame.sprite.Group()
         self.box_sprites = pygame.sprite.Group()
 
-        self.lvl = []
+        self.level = []
         self.board = [[None] * self.width for _ in range(self.height)]
 
         self.u = 2
@@ -67,15 +67,8 @@ class Board:
                 if self.balls[i].rect.y + 2 * self.balls[i].r >= ((self.top + self.cell_size * self.height) - 1):
 
                     if self.balls[i].x0 != 0 and self.balls[i].y0 != 0:
-                        for j in self.board:
-                            print(j)
-                        print()
-                        for j in self.lvl:
-                            print(j)
-                        print()
-
-                        if self.u <= len(self.lvl):
-                            self.board.insert(2, self.lvl[-self.u])
+                        if self.u <= len(self.level):
+                            self.board.insert(2, self.level[-self.u])
                             del self.board[-1]
                             for j in self.board[2]:
                                 if j is not None:

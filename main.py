@@ -7,7 +7,7 @@ if __name__ == '__main__':
     size = width, height = 500, 1000
     screen = pygame.display.set_mode(size)
 
-    f = open("lvl_1.txt", encoding="utf8")
+    f = open("levels/lvl_1.txt", encoding="utf8")
     lvl = f.readlines()
     f.close()
 
