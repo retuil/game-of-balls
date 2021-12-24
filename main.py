@@ -4,9 +4,14 @@ from ball import Ball
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1000, 1000
+    size = width, height = 500, 1000
     screen = pygame.display.set_mode(size)
-    board = Board(7, 11)
+
+    f = open("lvl_1.txt", encoding="utf8")
+    lvl = f.readlines()
+    f.close()
+
+    board = Board(7, 11, lvl)
     board.set_view(100, 100, 50)
     running = True
     clock = pygame.time.Clock()
