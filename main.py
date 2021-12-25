@@ -4,7 +4,7 @@ from ball import Ball
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 500, 1000
+    size = width, height = 550, 1000
     screen = pygame.display.set_mode(size)
 
     f = open("levels/lvl_1.txt", encoding="utf8")

@@ -2,6 +2,7 @@ from math import sqrt
 
 import pygame
 
+from border import Border
 from box import Box
 
 
@@ -38,10 +39,12 @@ class Board:
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
         self.box_sprites = pygame.sprite.Group()
+        self.horizontal_borders = pygame.sprite.Group()
+        self.vertical_borders = pygame.sprite.Group()
+        self.borders = pygame.sprite.Group()
 
         self.level = []
         self.board = [[None] * self.width for _ in range(self.height)]
-
         self.u = 2
         create_lvl(self, lvl)
 
@@ -50,23 +53,22 @@ class Board:
         self.top = top
         self.cell_size = cell_size
 
+        Border(self.left, self.top, self.left + self.width * self.cell_size, self.top, self)
+        Border(self.left, self.top + self.height * self.cell_size, self.left + self.width * self.cell_size,
+               self.top + self.height * self.cell_size, self)
+        Border(self.left, self.top, self.left, self.top + self.height * self.cell_size, self)
+        Border(self.left + self.width * self.cell_size, self.top, self.left + self.width * self.cell_size,
+               self.top + self.height * self.cell_size, self)
+
     def render(self, screen, clock, draw, t=None):
-        self.all_sprites.draw(screen)
         if draw == 2:
             c = clock.tick()
             if c > 10:
                 c = 1
-            self.balls_sprites.update(c)
+            self.balls_sprites.update(c, self)
             for i in range(len(self.balls)):
-                if self.balls[i].rect.x <= self.left:
-                    self.balls[i].x0 = abs(self.balls[i].x0)
-                if self.balls[i].rect.x + 2 * self.balls[i].r >= (self.left + self.cell_size * self.width):
-                    self.balls[i].x0 = -abs(self.balls[i].x0)
-                if self.balls[i].rect.y <= self.top:
-                    self.balls[i].y0 = abs(self.balls[i].y0)
                 if self.balls[i].rect.y + 2 * self.balls[i].r >= ((self.top + self.cell_size * self.height) - 1):
-
-                    if self.balls[i].x0 != 0 and self.balls[i].y0 != 0:
+                    if self.balls[i].vx != 0 and self.balls[i].vy != 0:
                         if self.u <= len(self.level):
                             self.board.insert(2, self.level[-self.u])
                             del self.board[-1]
@@ -76,9 +78,6 @@ class Board:
                                     self.all_sprites.add(j)
                             self.u += 1
                         self.box_sprites.update(self)
-
-                    self.balls[i].x0 = 0
-                    self.balls[i].y0 = 0
 
         elif draw == 1:
             x0 = t[0]
@@ -100,11 +99,13 @@ class Board:
                     pygame.draw.rect(screen, pygame.Color('red'), (x, y, self.cell_size, self.cell_size), width=1)
                 else:
                     pygame.draw.rect(screen, (2, 2, 2), (x, y, self.cell_size, self.cell_size), width=1)
-        pygame.draw.rect(screen, (200, 200, 200),
-                         (self.left, self.top, self.cell_size * self.width, self.cell_size * self.height), width=1)
+        # pygame.draw.rect(screen, (200, 200, 200),
+        #                  (self.left, self.top, self.cell_size * self.width, self.cell_size * self.height), width=1)
+        self.all_sprites.draw(screen)
+        self.borders.draw(screen)
 
     def on_click(self):
         for i in self.balls:
-            if i.x0 != 0 and i.y0 != 0:
+            if i.vx != 0 and i.vy != 0:
                 return False
         return True
