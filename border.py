@@ -9,8 +9,13 @@ class Border(pygame.sprite.Sprite):
             self.image = pygame.Surface([1, y2 - y1])
             self.image.fill(pygame.Color('white'))
             self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
+        elif y1 < board.top + board.height // 2:
+            self.add(board.up_horizontal_borders)
+            self.image = pygame.Surface([x2 - x1, 1])
+            self.image.fill(pygame.Color('white'))
+            self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
         else:
-            self.add(board.horizontal_borders)
+            self.add(board.down_horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 1])
             self.image.fill(pygame.Color('white'))
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)

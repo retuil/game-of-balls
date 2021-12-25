@@ -34,6 +34,7 @@ if __name__ == '__main__':
                     x0, y0 = event.pos
                     board.balls.append(Ball(x0, y0, board, 5))
                     t = None
+                    print(board.balls)
         screen.fill((0, 0, 0))
         board.render(screen, clock, draw, t)
         pygame.display.flip()

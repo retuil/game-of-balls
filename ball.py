@@ -39,12 +39,23 @@ class Ball(pygame.sprite.Sprite):
         self.x1 += self.vx * self.v * c / 1000
         self.y1 += self.vy * self.v * c / 1000
         self.rect.x, self.rect.y = round(self.x1), round(self.y1)
-
-        if pygame.sprite.spritecollideany(self, board.horizontal_borders):
-            if self.rect.y <= board.top:
-                self.vy = -self.vy
-            else:
-                self.vx = 0
-                self.vy = 0
         if pygame.sprite.spritecollideany(self, board.vertical_borders):
-            self.vx = -self.vx
+            if self.rect.x > board.left + board.width // 2:
+                self.vx = -abs(self.vx)
+            else:
+                self.vx = abs(self.vx)
+        if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
+            self.vy = abs(self.vy)
+        if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
+            if self.vx != 0 or self.vy != 0:  # TODO: Потом условие, что все шары уже выпущены
+                if board.u <= len(board.level):
+                    board.board.insert(2, board.level[-board.u])
+                    del board.board[-1]
+                    for j in board.board[2]:
+                        if j is not None:
+                            board.box_sprites.add(j)
+                            board.all_sprites.add(j)
+                    board.u += 1
+                board.box_sprites.update(board)
+            self.vx = 0
+            self.vy = 0
