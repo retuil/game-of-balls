@@ -27,3 +27,9 @@ class Box(pygame.sprite.Sprite):
 
     def update(self, board):
         self.rect.y += board.cell_size
+
+    def touch(self, board):
+        self.n -= 1
+        if self.n <= 0:
+            board.box_list.remove(self)
+            self.kill()

@@ -4,10 +4,6 @@ from math import sqrt
 
 import pygame
 
-pygame.init()
-size = width, height = 501, 501
-screen = pygame.display.set_mode(size)
-
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
@@ -15,13 +11,6 @@ def load_image(name, colorkey=None):
         print(f"'{fullname}' error")
         sys.exit()
     image = pygame.image.load(fullname)
-    if colorkey is not None:
-        image = image.convert(image)
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
     return image
 
 
@@ -43,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / (1 * sqrt(vx ** 2 + vy ** 2)), vy / (1 * sqrt(vx ** 2 + vy ** 2))
         self.vx = vx
         self.vy = -vy
-        self.v = 700
+        self.v = 800
         self.r = r
         board.all_sprites.add(self)
         board.balls_sprites.add(self)
@@ -79,10 +68,14 @@ class Ball(pygame.sprite.Sprite):
                 if self.rect.x + self.r in range(box.rect.x + 1, box.rect.x + board.cell_size + 1):
                     if self.rect.y + self.r <= box.rect.y + 1:
                         self.vy = -abs(self.vy)
+                        box.touch(board)
                     if self.rect.y + self.r >= box.rect.y + board.cell_size + 1:
                         self.vy = abs(self.vy)
+                        box.touch(board)
                 if self.rect.y + self.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
                     if self.rect.x + self.r <= box.rect.x + 1:
                         self.vx = -abs(self.vx)
+                        box.touch(board)
                     if self.rect.x + self.r >= box.rect.x + board.cell_size + 1:
                         self.vx = abs(self.vx)
+                        box.touch(board)
