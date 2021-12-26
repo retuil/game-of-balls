@@ -93,6 +93,13 @@ class Board:
                     pygame.draw.rect(screen, (2, 2, 2), (x, y, self.cell_size, self.cell_size), width=1)
         self.borders.draw(screen)
 
+        font = pygame.font.Font(None, 25)
+        for box in self.box_list:
+            text = font.render(f"{box.n}", True, (100, 255, 100))
+            text_x = box.rect.x + 5
+            text_y = box.rect.y + 5
+            screen.blit(text, (text_x, text_y))
+
     def on_click(self):
         for i in self.balls:
             if i.vx != 0 and i.vy != 0:
