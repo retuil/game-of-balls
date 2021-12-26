@@ -23,8 +23,6 @@ def create_lvl(board, level):
                 board.all_sprites.add(el)
                 board.box_list.append(el)
 
-            board.board[2][i] = el
-
 
 class Board:
     def __init__(self, width, height, lvl=None, debug=False):
@@ -49,7 +47,6 @@ class Board:
         self.borders = pygame.sprite.Group()
 
         self.level = []
-        self.board = [[None] * self.width for _ in range(self.height)]
         self.u = 2
         create_lvl(self, lvl)
 

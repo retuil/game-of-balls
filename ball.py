@@ -51,9 +51,7 @@ class Ball(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
             if self.vx != 0 or self.vy != 0:  # TODO: Потом условие, что все шары уже выпущены
                 if board.u <= len(board.level):
-                    board.board.insert(2, board.level[-board.u])
-                    del board.board[-1]
-                    for j in board.board[2]:
+                    for j in board.level[-board.u]:
                         if j is not None:
                             board.v_box_sprites.add(j)
                             board.all_sprites.add(j)
