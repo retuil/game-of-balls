@@ -27,11 +27,3 @@ class Box(pygame.sprite.Sprite):
 
     def update(self, board):
         self.rect.y += board.cell_size
-
-        # print((self.rect.y - board.top + 1) // board.cell_size)
-        # if (self.rect.y - board.top + 1) // board.cell_size == 2:
-        #     print(1)
-        #     for i in board.board:
-        #         print(i)
-        #     print()
-        #     board.board[2][(self.rect.x - board.left + 1) // board.cell_size] = self
