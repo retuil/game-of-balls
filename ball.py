@@ -32,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / (1 * sqrt(vx ** 2 + vy ** 2)), vy / (1 * sqrt(vx ** 2 + vy ** 2))
         self.vx = vx
         self.vy = -vy
-        self.v = 800
+        self.v = 80
         self.r = r
         board.all_sprites.add(self)
         board.balls_sprites.add(self)
@@ -49,7 +49,7 @@ class Ball(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
             self.vy = abs(self.vy)
         if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
-            if self.vx != 0 or self.vy != 0:  # TODO: Потом условие, что все шары уже выпущены
+            if self.vx != 0 or self.vy != 0 and board.on_click():
                 if board.u <= len(board.level):
                     for j in board.level[-board.u]:
                         if j is not None:
@@ -70,10 +70,14 @@ class Ball(pygame.sprite.Sprite):
                     if self.rect.y + self.r >= box.rect.y + board.cell_size + 1:
                         self.vy = abs(self.vy)
                         box.touch(board)
-                if self.rect.y + self.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
+                elif self.rect.y + self.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
                     if self.rect.x + self.r <= box.rect.x + 1:
                         self.vx = -abs(self.vx)
                         box.touch(board)
                     if self.rect.x + self.r >= box.rect.x + board.cell_size + 1:
                         self.vx = abs(self.vx)
                         box.touch(board)
+                # else:
+                #     self.vx *= -1
+                #     self.vy *= -1
+                #     box.touch(board)

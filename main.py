@@ -11,7 +11,7 @@ if __name__ == '__main__':
     lvl = f.readlines()
     f.close()
 
-    board = Board(7, 11, lvl, True)
+    board = Board(7, 11, lvl)
     board.set_view(100, 100, 50)
     running = True
     clock = pygame.time.Clock()

@@ -19,7 +19,7 @@ class Box(pygame.sprite.Sprite):
 
     def __init__(self, x, y, board, n, *group):
         super().__init__(*group)
-        self.image = Box.image1
+        self.image = Box.image2
         self.rect = self.image.get_rect()
         self.rect.x = board.left + (x + 1) * board.cell_size - 1
         self.rect.y = board.top + (y + 1) * board.cell_size - 1
