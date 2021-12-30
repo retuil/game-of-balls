@@ -50,6 +50,8 @@ class Board:
         self.u = 2
         create_lvl(self, lvl)
 
+        self.n = 1
+
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
