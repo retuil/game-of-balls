@@ -8,3 +8,7 @@ class ErrorInitSprite(Exception):
 
 class ErrorLoadImage(Exception):
     pass
+
+
+class ErrorNumberOfMyGroups(Exception):
+    pass
