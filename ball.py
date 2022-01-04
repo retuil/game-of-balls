@@ -17,23 +17,20 @@ def load_image(name, colorkey=None):
 class Ball(pygame.sprite.Sprite):
     image = load_image('ball.png', -1)
 
-    def __init__(self, vx, vy, board, r=5, *group):
+    def __init__(self, x, y, vx, vy, board, *group):
         super().__init__(*group)
         self.image = Ball.image
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.rect.x = board.left + board.width * board.cell_size // 2 - r
-        self.rect.y = board.top + board.height * board.cell_size - 2 * r - 2
+        self.rect.x = x
+        self.rect.y = y
         self.x1 = self.rect.x
         self.y1 = self.rect.y
-        vx = vx - (board.left + board.width * board.cell_size // 2)
-        vy = board.top + board.height * board.cell_size - vy - 2
-        vx, vy = vx / (1 * sqrt(vx ** 2 + vy ** 2)), vy / (1 * sqrt(vx ** 2 + vy ** 2))
-        self.vx = vx
-        self.vy = -vy
+        vx, vy = vx - board.x - board.r, board.y + board.r - vy - 2
+        self.vx, self.vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
         self.v = 800
-        self.r = r
+
         board.all_sprites.add(self)
         board.balls_sprites.add(self)
 
@@ -49,7 +46,7 @@ class Ball(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
             self.vy = abs(self.vy)
         if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
-            if self.vx != 0 or self.vy != 0:  # TODO: Потом условие, что все шары уже выпущены
+            if (self.vx != 0 or self.vy != 0) and (board.count_balls == len(board.balls)) and (board.balls[-1] == self):
                 if board.u <= len(board.level):
                     for j in board.level[-board.u]:
                         if j is not None:
@@ -57,23 +54,24 @@ class Ball(pygame.sprite.Sprite):
                             board.all_sprites.add(j)
                             board.box_list.append(j)
                     board.u += 1
+                board.x = board.balls[0].rect.x
                 board.box_sprites.update(board)
             self.vx = 0
             self.vy = 0
 
         for box in board.box_list:
             if pygame.sprite.collide_mask(self, box):
-                if self.rect.x + self.r in range(box.rect.x + 1, box.rect.x + board.cell_size + 1):
-                    if self.rect.y + self.r <= box.rect.y + 1:
+                if self.rect.x + board.r in range(box.rect.x + 1, box.rect.x + board.cell_size + 1):
+                    if self.rect.y + board.r <= box.rect.y + 1:
                         self.vy = -abs(self.vy)
                         box.touch(board)
-                    if self.rect.y + self.r >= box.rect.y + board.cell_size + 1:
+                    if self.rect.y + board.r >= box.rect.y + board.cell_size + 1:
                         self.vy = abs(self.vy)
                         box.touch(board)
-                if self.rect.y + self.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
-                    if self.rect.x + self.r <= box.rect.x + 1:
+                if self.rect.y + board.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
+                    if self.rect.x + board.r <= box.rect.x + 1:
                         self.vx = -abs(self.vx)
                         box.touch(board)
-                    if self.rect.x + self.r >= box.rect.x + board.cell_size + 1:
+                    if self.rect.x + board.r >= box.rect.x + board.cell_size + 1:
                         self.vx = abs(self.vx)
                         box.touch(board)

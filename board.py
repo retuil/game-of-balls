@@ -2,6 +2,7 @@ from math import sqrt
 
 import pygame
 
+from ball import Ball
 from border import Border
 from box import Box
 
@@ -25,7 +26,7 @@ def create_lvl(board, level):
 
 
 class Board:
-    def __init__(self, width, height, lvl=None, debug=False):
+    def __init__(self, width, height, r=5, lvl=None, debug=False):
         self.width = width
         self.height = height
 
@@ -36,6 +37,8 @@ class Board:
         self.debug = debug
 
         self.balls = []
+        self.count_balls = 0
+
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
         self.box_sprites = pygame.sprite.Group()
@@ -50,10 +53,21 @@ class Board:
         self.u = 2
         create_lvl(self, lvl)
 
+        self.r = r
+        self.x = self.left + self.width * self.cell_size // 2 - self.r
+        self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
+        self.vx = 0
+        self.vy = 0
+
+        self.t = 0
+
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
         self.cell_size = cell_size
+
+        self.x = self.left + self.width * self.cell_size // 2 - self.r
+        self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
 
         Border(self.left, self.top, self.left + self.width * self.cell_size, self.top, self)
         Border(self.left, self.top + self.height * self.cell_size, self.left + self.width * self.cell_size,
@@ -62,22 +76,29 @@ class Board:
         Border(self.left + self.width * self.cell_size, self.top, self.left + self.width * self.cell_size,
                self.top + self.height * self.cell_size, self)
 
-    def render(self, screen, clock, draw, t=None):
+    def render(self, screen, clock, draw, vx_vy):
+        self.t += 1
+
         if draw == 2:
             c = clock.tick()
             if c > 10:
                 c = 1
             self.balls_sprites.update(c, self)
         elif draw == 1:
-            x0 = t[0]
-            y0 = t[1]
-            x0, y0 = x0 - (self.left + self.width * self.cell_size // 2), self.top + self.height * self.cell_size - y0
-            x0, y0 = 150 * x0 / sqrt(x0 ** 2 + y0 ** 2), 150 * y0 / sqrt(x0 ** 2 + y0 ** 2)
-            x0, y0 = x0 + (self.left + self.width * self.cell_size // 2), self.top + self.height * self.cell_size - y0
-            pygame.draw.line(screen, (30, 30, 30),
-                             (self.left + self.width * self.cell_size // 2,
-                              self.top + self.height * self.cell_size - 5 - 1), (int(x0), int(y0)), width=1)
+            vx = vx_vy[0]
+            vy = vx_vy[1]
+
+            vx, vy = vx - self.x - self.r, self.y + self.r - vy - 2
+            vx, vy = 150 * vx / sqrt(vx ** 2 + vy ** 2), 150 * vy / sqrt(vx ** 2 + vy ** 2)
+            vx, vy = vx + self.x + self.r, self.y + self.r - vy
+
+            pygame.draw.line(screen, pygame.Color('green'),
+                             (self.x + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
         self.all_sprites.draw(screen)
+
+        if len(self.balls) < self.count_balls and self.t % 50 == 0:
+            self.add_ball()
+
         for i in range(self.height):
             for j in range(self.width):
                 x = self.left + self.cell_size * j
@@ -92,7 +113,7 @@ class Board:
 
         font = pygame.font.Font(None, 25)
         for box in self.box_list:
-            text = font.render(f"{box.n}", True, (100, 255, 100))
+            text = font.render(f"{box.n}", True, (0, 0, 0))
             text_x = box.rect.x + 5
             text_y = box.rect.y + 5
             screen.blit(text, (text_x, text_y))
@@ -102,3 +123,20 @@ class Board:
             if i.vx != 0 and i.vy != 0:
                 return False
         return True
+
+    def motion(self, vx, vy):
+        self.t = 0
+        if self.vx == 0:
+            self.count_balls = 1
+        else:
+            self.x = self.balls[0].rect.x
+        for i in self.balls:
+            i.kill()
+        self.balls = []
+        self.vx = vx
+        self.vy = vy
+        self.add_ball()
+
+    def add_ball(self):
+        ball = Ball(self.x, self.y, self.vx, self.vy, self)
+        self.balls.append(ball)
