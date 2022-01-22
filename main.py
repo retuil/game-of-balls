@@ -21,21 +21,20 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if board.on_click():
+                if board.check():
                     draw = 1
                     vx_vy = event.pos
             if event.type == pygame.MOUSEMOTION and draw == 1:
-                if board.on_click():
+                if board.check():
                     vx_vy = event.pos
             if event.type == pygame.MOUSEBUTTONUP:
-                if board.on_click():
+                if board.check():
                     draw = 2
                     vx, vy = event.pos
                     board.count_balls += 1
                     board.motion(vx, vy)
                     t = None
                     # screen.fill((0, 0, 0))
-
         screen.fill((0, 0, 0))
         board.render(screen, clock, draw, vx_vy)
         pygame.display.flip()
