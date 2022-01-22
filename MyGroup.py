@@ -6,13 +6,14 @@ from MyException import *
 #Спрайт может принадлежать только к одной группе класса MyGroup, количество других групп к которым может принадлежать спрайт не ограничено
 
 class MyGroup(pygame.sprite.Group):
-    def __init__(self, *sprites,  indents_between_sprites=[0, 0], edge_indents=[0, 0], sprites_size=[None, None]):
+    def __init__(self, *sprites,  indents_between_sprites=[0, 0], edge_indents=[0, 0], sprites_size=[0, 0]):
         super().__init__(*sprites)
         self.indents_between_sprites = self.indent_between_sprites_x, self.indent_between_sprites_y = indents_between_sprites
         self.sorted_sprites = self.sort_sprites()
-        self.grouped_sprites = self.sprite_distribution()
         self.edge_indent_x, self.edge_indent_y = self.edge_indents = edge_indents
         self.width_sprites, self.height_sprites = self.sprites_size = sprites_size
+        self.grouped_sprites = self.sprite_distribution()
+
 
     def add(self, *sprites):
         sprites_pos = list(map(lambda x: x.pos_in_group, list(sprites)))

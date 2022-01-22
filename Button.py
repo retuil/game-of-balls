@@ -5,7 +5,8 @@ from HelpFunction import HelpFunction
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, pos_in_group, *groups, size=[None, None], pos=[None, None], text=False, image=False, color=False):
+    def __init__(self, pos_in_group, *groups, size=[None, None], pos=[None, None],
+                 text=False, image=False, color=pygame.Color((0, 0, 0)), screen=0):
         in_main_group = False
         for group in groups:
             if type(group) == MyGroup:
@@ -15,7 +16,7 @@ class Button(pygame.sprite.Sprite):
                 else:
                     raise ErrorNumberOfMyGroups('Спрайт добавлен более чем в одну группу \"MyGroup\"')
         if not in_main_group:
-            raise ErrorNumberOfMyGroups('Спрайт добавлен более че в одну группу \"MyGroup\"')
+            raise ErrorNumberOfMyGroups('Спрайт не добавлен в группу \"MyGroup\"')
 
         self.pos_in_group = pos_in_group
         super().__init__(*groups)
@@ -45,23 +46,24 @@ class Button(pygame.sprite.Sprite):
                     if sprite == self:
                         self.width = self.main_group.edge_indent_x + self.main_group.indent_between_sprites_x * number_sprite_in_line + self.main_group.wight_sprites * number_sprite_in_line
                         self.height = self.main_group.edge_indent_y + self.main_group.indent_between_sprites_y * number_sprite_line + self.main_group.height_sprites * number_sprite_line
-                        break
                         allbreak = True
+                        break
                     else:
                         number_sprite_in_line += 1
                 if allbreak:
                     break
                 number_sprite_line += 1
 
-        self.rect = (*self.pos, *self.size)
+        self.rect = (pygame.Rect(*self.pos, *self.size))
 
         if text:
             self.text = text
-        if image:
-            self.image = HelpFunction.load_image(image)     #Передать только имя файла, лежащего в папке data
         if color:
             self.color = pygame.Color(color)
-
+        if image:
+            self.image = HelpFunction().load_image(image)  # Передать только имя файла, лежащего в папке data
+        else:
+            self.image = pygame.Surface(self.size, flags=0, pygame.SRCALPHA)
 
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
