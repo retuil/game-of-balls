@@ -31,6 +31,8 @@ class Ball(pygame.sprite.Sprite):
         self.vx, self.vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
         self.v = 800
 
+        self.history = [None]
+
         board.all_sprites.add(self)
         board.balls_sprites.add(self)
 
@@ -38,15 +40,23 @@ class Ball(pygame.sprite.Sprite):
         self.x1 += self.vx * self.v * c / 1000
         self.y1 += self.vy * self.v * c / 1000
         self.rect.x, self.rect.y = int(self.x1), int(self.y1)
+
         if pygame.sprite.spritecollideany(self, board.vertical_borders):
             if self.rect.x > board.left + board.width // 2:
                 self.vx = -abs(self.vx)
             else:
                 self.vx = abs(self.vx)
+            self.history.append(None)
         if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
             self.vy = abs(self.vy)
+            self.history.append(None)
         if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
-            if (self.vx != 0 or self.vy != 0) and (board.count_balls == len(board.balls)) and (board.balls[-1] == self):
+            self.vx = 0
+            self.vy = 0
+            self.history.append(None)
+            if self == board.balls[0]:
+                board.x = board.balls[0].rect.x
+            if (board.count_balls == len(board.balls)) and board.check():
                 if board.u <= len(board.level):
                     for j in board.level[-board.u]:
                         if j is not None:
@@ -54,24 +64,34 @@ class Ball(pygame.sprite.Sprite):
                             board.all_sprites.add(j)
                             board.box_list.append(j)
                     board.u += 1
-                board.x = board.balls[0].rect.x
                 board.box_sprites.update(board)
-            self.vx = 0
-            self.vy = 0
+            self.kill()
 
         for box in board.box_list:
-            if pygame.sprite.collide_mask(self, box):
-                if self.rect.x + board.r in range(box.rect.x + 1, box.rect.x + board.cell_size + 1):
-                    if self.rect.y + board.r <= box.rect.y + 1:
+            if pygame.sprite.collide_rect(self, box):
+                if self.rect.x + board.r in range(box.rect.x + 1 - board.r, box.rect.x + board.cell_size + 1 + board.r):
+                    if self.rect.y <= box.rect.y + 1:
                         self.vy = -abs(self.vy)
-                        box.touch(board)
+                        if self.history[-1] != box:
+                            box.touch(board)
+                            self.history.append(box)
+                            break
                     if self.rect.y + board.r >= box.rect.y + board.cell_size + 1:
                         self.vy = abs(self.vy)
-                        box.touch(board)
-                if self.rect.y + board.r in range(box.rect.y + 1, box.rect.y + board.cell_size + 1):
-                    if self.rect.x + board.r <= box.rect.x + 1:
+                        if self.history[-1] != box:
+                            box.touch(board)
+                            self.history.append(box)
+                            break
+                if self.rect.y + board.r in range(box.rect.y + 1 - board.r, box.rect.y + board.cell_size + 1 + board.r):
+                    if self.rect.x <= box.rect.x + 1:
                         self.vx = -abs(self.vx)
-                        box.touch(board)
+                        if self.history[-1] != box:
+                            box.touch(board)
+                            self.history.append(box)
+                            break
                     if self.rect.x + board.r >= box.rect.x + board.cell_size + 1:
                         self.vx = abs(self.vx)
-                        box.touch(board)
+                        if self.history[-1] != box:
+                            box.touch(board)
+                            self.history.append(box)
+                            break

@@ -96,7 +96,7 @@ class Board:
                              (self.x + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
         self.all_sprites.draw(screen)
 
-        if len(self.balls) < self.count_balls and self.t % 50 == 0:
+        if len(self.balls) < self.count_balls and self.t % 100 == 0:
             self.add_ball()
 
         for i in range(self.height):
@@ -118,7 +118,7 @@ class Board:
             text_y = box.rect.y + 5
             screen.blit(text, (text_x, text_y))
 
-    def on_click(self):
+    def check(self):
         for i in self.balls:
             if i.vx != 0 and i.vy != 0:
                 return False
