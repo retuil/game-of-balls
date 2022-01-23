@@ -16,14 +16,29 @@ def load_image(name, colorkey=None):
 class Box(pygame.sprite.Sprite):
     image1 = load_image('box_1.png')
     image2 = load_image('box_2.png')
+    image3 = load_image('box_3.png')
+    image4 = load_image('box_4.png')
+    image5 = load_image('box_5.png')
+    image6 = load_image('box_6.png')
+    image7 = load_image('box_7.png')
+    image = {
+        0: image1,
+        1: image2,
+        2: image3,
+        3: image4,
+        4: image5,
+        5: image6,
+        6: image7,
+    }
 
     def __init__(self, x, y, board, n, *group):
         super().__init__(*group)
-        self.image = Box.image2
+        self.image = Box.image1
         self.rect = self.image.get_rect()
         self.rect.x = board.left + (x + 1) * board.cell_size - 1
         self.rect.y = board.top + (y + 1) * board.cell_size - 1
         self.n = n
+        self.image = Box.image[self.n % 7]
 
     def update(self, board):
         self.rect.y += board.cell_size
@@ -33,3 +48,6 @@ class Box(pygame.sprite.Sprite):
         if self.n <= 0:
             board.box_list.remove(self)
             self.kill()
+        else:
+            self.image = Box.image[self.n % 7]
+

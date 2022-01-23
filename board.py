@@ -77,27 +77,28 @@ class Board:
                self.top + self.height * self.cell_size, self)
 
     def render(self, screen, clock, draw, vx_vy):
-        self.t += 1
+        c = clock.tick()
+        if c > 10:
+            c = 1
+        self.t += c
 
         if draw == 2:
-            c = clock.tick()
-            if c > 10:
-                c = 1
             self.balls_sprites.update(c, self)
         elif draw == 1:
             vx = vx_vy[0]
             vy = vx_vy[1]
-
+            if vy >= self.top + self.height * self.cell_size * 0.95:
+                vy = self.top + self.height * self.cell_size * 0.95
             vx, vy = vx - self.x - self.r, self.y + self.r - vy - 2
             vx, vy = 150 * vx / sqrt(vx ** 2 + vy ** 2), 150 * vy / sqrt(vx ** 2 + vy ** 2)
             vx, vy = vx + self.x + self.r, self.y + self.r - vy
-
             pygame.draw.line(screen, pygame.Color('green'),
                              (self.x + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
         self.all_sprites.draw(screen)
 
-        if len(self.balls) < self.count_balls and self.t % 100 == 0:
+        if len(self.balls) < self.count_balls and self.t >= 150:
             self.add_ball()
+            self.t = 0
 
         for i in range(self.height):
             for j in range(self.width):
