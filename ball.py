@@ -4,6 +4,8 @@ from math import sqrt
 
 import pygame
 
+from level import next_level
+
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
@@ -33,7 +35,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
 
         self.vx, self.vy = vx, vy
-        self.v = 200
+        self.v = 700
 
         self.history = [None]
 
@@ -54,21 +56,27 @@ class Ball(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
             self.vy = abs(self.vy)
             self.history.append(None)
-        if pygame.sprite.spritecollideany(self, board.down_horizontal_borders):
+        if pygame.sprite.spritecollideany(self, board.down_horizontal_borders) or \
+                self.rect.y >= board.top + board.height * board.cell_size + 2 * board.r:
             self.vx = 0
             self.vy = 0
             self.history.append(None)
             if self == board.balls[0]:
                 board.x = board.balls[0].rect.x
+
             if (board.count_balls == len(board.balls)) and board.check():
-                if board.u <= len(board.level):
-                    for j in board.level[-board.u]:
+                if board.infinite_level:
+                    board.box_sprites.update(board)
+                    next_level(board)
+                elif board.score <= len(board.level):
+                    for j in board.level[board.score - 1]:
                         if j is not None:
                             board.v_box_sprites.add(j)
                             board.all_sprites.add(j)
                             board.box_list.append(j)
-                    board.u += 1
-                board.box_sprites.update(board)
+                    board.score += 1
+                    board.box_sprites.update(board)
+
             self.kill()
 
         for box in board.box_list:
@@ -86,6 +94,7 @@ class Ball(pygame.sprite.Sprite):
                             box.touch(board)
                             self.history.append(box)
                             break
+
                 if self.rect.y + board.r in range(box.rect.y + 1 - board.r, box.rect.y + board.cell_size + 1 + board.r):
                     if self.rect.x <= box.rect.x + 1:
                         self.vx = -abs(self.vx)
@@ -99,3 +108,4 @@ class Ball(pygame.sprite.Sprite):
                             box.touch(board)
                             self.history.append(box)
                             break
+

@@ -4,7 +4,7 @@ import sys
 import pygame
 
 
-def load_image(name, colorkey=None):
+def load_image(name):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
         print(f"'{fullname}' error")
@@ -35,8 +35,8 @@ class Box(pygame.sprite.Sprite):
         super().__init__(*group)
         self.image = Box.image1
         self.rect = self.image.get_rect()
-        self.rect.x = board.left + (x + 1) * board.cell_size - 1
-        self.rect.y = board.top + (y + 1) * board.cell_size - 1
+        self.rect.x = board.left + x * board.cell_size - 1
+        self.rect.y = board.top + y * board.cell_size - 1
         self.n = n
         self.image = Box.image[self.n % 7]
 
@@ -50,4 +50,3 @@ class Box(pygame.sprite.Sprite):
             self.kill()
         else:
             self.image = Box.image[self.n % 7]
-

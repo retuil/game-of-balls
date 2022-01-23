@@ -4,40 +4,27 @@ import pygame
 
 from ball import Ball
 from border import Border
-from box import Box
 
-
-def create_lvl(board, level):
-    if level is not None:
-        for i, s in enumerate(level):
-            board.level.append([])
-            for j, el in enumerate(s.rstrip().split(',')):
-                if el == '.':
-                    board.level[-1].append(None)
-                else:
-                    q = Box(j, i + 3 - len(level), board, int(el))
-                    board.level[-1].append(q)
-                    board.box_sprites.add(q)
-        for i, el in enumerate(board.level[-1]):
-            if el is not None:
-                board.v_box_sprites.add(el)
-                board.all_sprites.add(el)
-                board.box_list.append(el)
+from level import next_level, create_level
 
 
 class Board:
-    def __init__(self, width, height, r=5, lvl=None, debug=False):
-        self.width = width
-        self.height = height
-
-        self.left = 50
-        self.top = 50
-        self.cell_size = 50
-
+    def __init__(self, width, height, left, top, cell_size, r=5, lvl=None, debug=False):
         self.debug = debug
 
-        self.balls = []
-        self.count_balls = 0
+        self.width = width
+        self.height = height
+        self.left = left
+        self.top = top
+        self.cell_size = cell_size
+        self.r = r
+
+        self.x = self.left + self.width * self.cell_size // 2 - self.r
+        self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
+        self.vx = 0
+        self.vy = 0
+
+        self.t = 0
 
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
@@ -49,32 +36,30 @@ class Board:
         self.vertical_borders = pygame.sprite.Group()
         self.borders = pygame.sprite.Group()
 
-        self.level = []
-        self.u = 2
-        create_lvl(self, lvl)
-
-        self.r = r
-        self.x = self.left + self.width * self.cell_size // 2 - self.r
-        self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
-        self.vx = 0
-        self.vy = 0
-
-        self.t = 0
-
-    def set_view(self, left, top, cell_size):
-        self.left = left
-        self.top = top
-        self.cell_size = cell_size
-
-        self.x = self.left + self.width * self.cell_size // 2 - self.r
-        self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
-
         Border(self.left, self.top, self.left + self.width * self.cell_size, self.top, self)
         Border(self.left, self.top + self.height * self.cell_size, self.left + self.width * self.cell_size,
                self.top + self.height * self.cell_size, self)
         Border(self.left, self.top, self.left, self.top + self.height * self.cell_size, self)
         Border(self.left + self.width * self.cell_size, self.top, self.left + self.width * self.cell_size,
                self.top + self.height * self.cell_size, self)
+
+        self.balls = []
+        self.count_balls = 0
+
+        self.level = []
+        self.score = 1
+        if lvl is None:
+            self.infinite_level = True
+            self.level.append(next_level(self))
+        else:
+            self.infinite_level = False
+            create_level(self, lvl)
+            for el in self.level[0]:
+                if el is not None:
+                    self.v_box_sprites.add(el)
+                    self.all_sprites.add(el)
+                    self.box_list.append(el)
+            self.score += 1
 
     def render(self, screen, clock, draw, vx_vy):
         c = clock.tick()
@@ -110,6 +95,7 @@ class Board:
                     pygame.draw.rect(screen, pygame.Color('red'), (x, y, self.cell_size, self.cell_size), width=1)
                 else:
                     pygame.draw.rect(screen, (2, 2, 2), (x, y, self.cell_size, self.cell_size), width=1)
+        self.balls_sprites.draw(screen)
         self.borders.draw(screen)
 
         font = pygame.font.Font(None, 25)
