@@ -28,6 +28,8 @@ class Board:
 
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
+        self.balls = []
+        self.count_balls = 0
         self.box_sprites = pygame.sprite.Group()
         self.v_box_sprites = pygame.sprite.Group()
         self.box_list = []
@@ -42,9 +44,6 @@ class Board:
         Border(self.left, self.top, self.left, self.top + self.height * self.cell_size, self)
         Border(self.left + self.width * self.cell_size, self.top, self.left + self.width * self.cell_size,
                self.top + self.height * self.cell_size, self)
-
-        self.balls = []
-        self.count_balls = 0
 
         self.level = []
         self.score = 1
@@ -104,6 +103,9 @@ class Board:
             text_x = box.rect.x + 5
             text_y = box.rect.y + 5
             screen.blit(text, (text_x, text_y))
+
+        text = font.render(f'Счёт: {self.score - 1}', True, pygame.Color('white'))
+        screen.blit(text, (self.left, self.top + self.height * self.cell_size + 5))
 
     def check(self):
         for i in self.balls:
