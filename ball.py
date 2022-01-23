@@ -27,9 +27,13 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = y
         self.x1 = self.rect.x
         self.y1 = self.rect.y
+        if vy >= board.top + board.height * board.cell_size * 0.95:
+            vy = board.top + board.height * board.cell_size * 0.95
         vx, vy = vx - board.x - board.r, board.y + board.r - vy - 2
-        self.vx, self.vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
-        self.v = 800
+        vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
+
+        self.vx, self.vy = vx, vy
+        self.v = 200
 
         self.history = [None]
 
