@@ -118,8 +118,6 @@ class Board:
             self.count_balls = 1
         else:
             self.x = self.balls[0].rect.x
-        for i in self.balls:
-            i.kill()
         self.balls = []
         self.vx, self.vy = vx, vy
         self.add_ball()

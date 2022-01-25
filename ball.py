@@ -23,7 +23,6 @@ class Ball(pygame.sprite.Sprite):
         super().__init__(*group)
         self.image = Ball.image
         self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
 
         self.rect.x = x
         self.rect.y = y
