@@ -37,3 +37,12 @@ def next_level(board):
             i_level.append(None)
     board.score += 1
     board.level.append(i_level)
+
+
+def open_level_file(level):
+    if level is None:
+        return None
+    f = open(f"levels/{level}", encoding="utf8")
+    level = f.readlines()
+    f.close()
+    return level

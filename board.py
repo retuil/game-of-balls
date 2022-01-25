@@ -4,12 +4,11 @@ import pygame
 
 from ball import Ball
 from border import Border
-
 from level import next_level, create_level
 
 
 class Board:
-    def __init__(self, size, margins, cell_size, r=5, lvl=None, debug=False):
+    def __init__(self, size, margins, cell_size, r=5, level=None, debug=False):
         self.debug = debug
         self.width, self.height = size[0], size[1]
         self.left, self.top = margins[0], margins[1]
@@ -43,12 +42,12 @@ class Board:
 
         self.level = []
         self.score = 1
-        if lvl is None:
+        if level is None:
             self.infinite_level = True
             self.level.append(next_level(self))
         else:
             self.infinite_level = False
-            create_level(self, lvl)
+            create_level(self, level)
             for el in self.level[0]:
                 if el is not None:
                     self.v_box_sprites.add(el)
@@ -58,25 +57,25 @@ class Board:
 
         self.timer = 0
 
-    def render(self, screen, draw, vx_vy):
+    def render(self, screen, draw, aim_coord):
         screen.fill((0, 0, 0))
         c = self.clock.tick()
         if c > 10:
             c = 1
         self.timer += c
 
-        if draw == 2:
-            self.balls_sprites.update(c, self)
-        elif draw == 1:
-            vx = vx_vy[0]
-            vy = vx_vy[1]
-            if vy >= self.top + self.height * self.cell_size * 0.95:
-                vy = self.top + self.height * self.cell_size * 0.95
-            vx, vy = vx - self.x_ - self.r, self.y + self.r - vy - 2
-            vx, vy = 150 * vx / sqrt(vx ** 2 + vy ** 2), 150 * vy / sqrt(vx ** 2 + vy ** 2)
-            vx, vy = vx + self.x_ + self.r, self.y + self.r - vy
+        if draw == 1:
+            aim_x = aim_coord[0]
+            aim_y = aim_coord[1]
+            if aim_y >= self.top + self.height * self.cell_size * 0.95:
+                aim_y = self.top + self.height * self.cell_size * 0.95
+            aim_x, aim_y = aim_x - self.x_ - self.r, self.y + self.r - aim_y - 2
+            aim_x, aim_y = 150 * aim_x / sqrt(aim_x ** 2 + aim_y ** 2), 150 * aim_y / sqrt(aim_x ** 2 + aim_y ** 2)
+            aim_x, aim_y = aim_x + self.x_ + self.r, self.y + self.r - aim_y
             pygame.draw.line(screen, pygame.Color('green'),
-                             (self.x_ + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
+                             (self.x_ + self.r, self.y + self.r - 2), (int(aim_x), int(aim_y)), width=1)
+        elif draw == 2:
+            self.balls_sprites.update(c, self)
         self.all_sprites.draw(screen)
 
         if len(self.balls) < self.count_balls and self.timer >= 150:

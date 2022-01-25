@@ -108,4 +108,3 @@ class Ball(pygame.sprite.Sprite):
                             box.touch(board)
                             self.history.append(box)
                             break
-
