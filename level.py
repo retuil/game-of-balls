@@ -22,7 +22,7 @@ def next_level(board):
     k = 0
     for i in range(board.width):
         r = randint(1, 8)
-        if r < 6 and k <= 5:
+        if r < 6 and k <= board.width - 2:
             k += 1
             if r % 4 == 0:
                 q = Box(i, 2, board, 2 * board.score)

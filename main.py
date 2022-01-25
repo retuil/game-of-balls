@@ -1,6 +1,14 @@
 import pygame
 from board import Board
 
+def main():
+    pass
+
+
+def game_event():
+    pass
+
+
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 550, 800
@@ -10,11 +18,10 @@ if __name__ == '__main__':
     lvl = f.readlines()
     f.close()
 
-    board = Board(7, 11, 100, 100, 50, 5)
+    board = Board((7, 11), (100, 100), 50, 5)
+
     running = True
-    clock = pygame.time.Clock()
-    draw = 0
-    vx_vy = None
+    draw, vx_vy = None, None
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -29,12 +36,8 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONUP:
                 if board.check():
                     draw = 2
-                    vx, vy = event.pos
                     board.count_balls += 1
-                    board.motion(vx, vy)
-                    t = None
-                    # screen.fill((0, 0, 0))
-        screen.fill((0, 0, 0))
-        board.render(screen, clock, draw, vx_vy)
+                    board.motion(*event.pos)
+        board.render(screen, draw, vx_vy)
         pygame.display.flip()
     pygame.quit()

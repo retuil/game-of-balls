@@ -62,7 +62,7 @@ class Ball(pygame.sprite.Sprite):
             self.vy = 0
             self.history.append(None)
             if self == board.balls[0]:
-                board.x = board.balls[0].rect.x
+                board.x_ = board.balls[0].rect.x
 
             if (board.count_balls == len(board.balls)) and board.check():
                 if board.infinite_level:

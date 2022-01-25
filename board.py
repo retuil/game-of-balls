@@ -9,22 +9,16 @@ from level import next_level, create_level
 
 
 class Board:
-    def __init__(self, width, height, left, top, cell_size, r=5, lvl=None, debug=False):
+    def __init__(self, size, margins, cell_size, r=5, lvl=None, debug=False):
         self.debug = debug
-
-        self.width = width
-        self.height = height
-        self.left = left
-        self.top = top
+        self.width, self.height = size[0], size[1]
+        self.left, self.top = margins[0], margins[1]
         self.cell_size = cell_size
         self.r = r
-
         self.x = self.left + self.width * self.cell_size // 2 - self.r
+        self.x_ = self.left + self.width * self.cell_size // 2 - self.r
         self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
-        self.vx = 0
-        self.vy = 0
-
-        self.t = 0
+        self.vx, self.vy = 0, 0
 
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
@@ -45,6 +39,8 @@ class Board:
         Border(self.left + self.width * self.cell_size, self.top, self.left + self.width * self.cell_size,
                self.top + self.height * self.cell_size, self)
 
+        self.clock = pygame.time.Clock()
+
         self.level = []
         self.score = 1
         if lvl is None:
@@ -60,11 +56,14 @@ class Board:
                     self.box_list.append(el)
             self.score += 1
 
-    def render(self, screen, clock, draw, vx_vy):
-        c = clock.tick()
+        self.timer = 0
+
+    def render(self, screen, draw, vx_vy):
+        screen.fill((0, 0, 0))
+        c = self.clock.tick()
         if c > 10:
             c = 1
-        self.t += c
+        self.timer += c
 
         if draw == 2:
             self.balls_sprites.update(c, self)
@@ -73,16 +72,16 @@ class Board:
             vy = vx_vy[1]
             if vy >= self.top + self.height * self.cell_size * 0.95:
                 vy = self.top + self.height * self.cell_size * 0.95
-            vx, vy = vx - self.x - self.r, self.y + self.r - vy - 2
+            vx, vy = vx - self.x_ - self.r, self.y + self.r - vy - 2
             vx, vy = 150 * vx / sqrt(vx ** 2 + vy ** 2), 150 * vy / sqrt(vx ** 2 + vy ** 2)
-            vx, vy = vx + self.x + self.r, self.y + self.r - vy
+            vx, vy = vx + self.x_ + self.r, self.y + self.r - vy
             pygame.draw.line(screen, pygame.Color('green'),
-                             (self.x + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
+                             (self.x_ + self.r, self.y + self.r - 2), (int(vx), int(vy)), width=1)
         self.all_sprites.draw(screen)
 
-        if len(self.balls) < self.count_balls and self.t >= 150:
+        if len(self.balls) < self.count_balls and self.timer >= 150:
             self.add_ball()
-            self.t = 0
+            self.timer = 0
 
         for i in range(self.height):
             for j in range(self.width):
@@ -114,7 +113,8 @@ class Board:
         return True
 
     def motion(self, vx, vy):
-        self.t = 0
+        self.timer = 0
+        self.x = self.x_
         if self.vx == 0:
             self.count_balls = 1
         else:
@@ -122,8 +122,7 @@ class Board:
         for i in self.balls:
             i.kill()
         self.balls = []
-        self.vx = vx
-        self.vy = vy
+        self.vx, self.vy = vx, vy
         self.add_ball()
 
     def add_ball(self):
