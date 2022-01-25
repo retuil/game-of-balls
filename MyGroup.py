@@ -6,7 +6,7 @@ from MyException import *
 #Спрайт может принадлежать только к одной группе класса MyGroup, количество других групп к которым может принадлежать спрайт не ограничено
 
 class MyGroup(pygame.sprite.Group):
-    def __init__(self, *sprites,  indents_between_sprites=[0, 0], edge_indents=[0, 0], sprites_size=[0, 0]):
+    def __init__(self, indents_between_sprites, edge_indents, sprites_size, *sprites):
         super().__init__(*sprites)
         self.indents_between_sprites = self.indent_between_sprites_x, self.indent_between_sprites_y = indents_between_sprites
         self.sorted_sprites = self.sort_sprites()
@@ -41,14 +41,14 @@ class MyGroup(pygame.sprite.Group):
 
 
 
-    def same_size(self):
-        same_size = True
-        all_sprites = self.sprites()
-        first_size = all_sprites[0].size
-        for sprite_size in all_sprites:
-            if not sprite_size.size == first_size:
-                same_size = False
-        return same_size
+    # def same_size(self):
+    #     same_size = True
+    #     all_sprites = self.sprites()
+    #     first_size = all_sprites[0].size
+    #     for sprite_size in all_sprites:
+    #         if not sprite_size.size == first_size:
+    #             same_size = False
+    #     return same_size
 
     def sprite_distribution(self):
         max_width = self.width_sprites - self.edge_indent_x * 2
@@ -70,3 +70,8 @@ class MyGroup(pygame.sprite.Group):
                     number_in_group = 0
             number_in_group += 1
         return groups
+
+    def draw(self, surface):
+        for sprite in self.sorted_sprites:
+            sprite.position()
+        super().draw(surface)

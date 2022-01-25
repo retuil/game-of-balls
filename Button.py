@@ -5,8 +5,11 @@ from HelpFunction import HelpFunction
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, pos_in_group, *groups, size=[None, None], pos=[None, None],
-                 text=False, image=False, color=pygame.Color((0, 0, 0)), screen=0):
+    def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
+                 size=[None, None], pos=[None, None]):
+        super().__init__(*groups)
+
+
         in_main_group = False
         for group in groups:
             if type(group) == MyGroup:
@@ -15,11 +18,12 @@ class Button(pygame.sprite.Sprite):
                     in_main_group = True
                 else:
                     raise ErrorNumberOfMyGroups('Спрайт добавлен более чем в одну группу \"MyGroup\"')
-        if not in_main_group:
-            raise ErrorNumberOfMyGroups('Спрайт не добавлен в группу \"MyGroup\"')
+        # if not in_main_group:
+        #     raise ErrorNumberOfMyGroups('Спрайт не добавлен в группу \"MyGroup\"')
+
 
         self.pos_in_group = pos_in_group
-        super().__init__(*groups)
+
 
         error_in_size = ErrorInitSprite('Не задан размер спрайтов в группе')
         if size[0] is None and size[1] is None:
@@ -34,27 +38,11 @@ class Button(pygame.sprite.Sprite):
         else:
             raise error_in_size
 
-        if pos[0] is not None and pos[1] is not None and pos_in_group == 0:
-            self.left, self.top = self.pos = pos
-            self.main_group.edge_indents = pos
-        else:
-            number_sprite_line = 0
-            number_sprite_in_line = 0
-            allbreak = False
-            for sprite_lines in self.main_group.grouped_sprites:
-                for sprite in sprite_lines:
-                    if sprite == self:
-                        self.width = self.main_group.edge_indent_x + self.main_group.indent_between_sprites_x * number_sprite_in_line + self.main_group.wight_sprites * number_sprite_in_line
-                        self.height = self.main_group.edge_indent_y + self.main_group.indent_between_sprites_y * number_sprite_line + self.main_group.height_sprites * number_sprite_line
-                        allbreak = True
-                        break
-                    else:
-                        number_sprite_in_line += 1
-                if allbreak:
-                    break
-                number_sprite_line += 1
+        # if pos[0] is not None and pos[1] is not None and pos_in_group == 0:
+        #     self.left, self.top = self.pos = pos
+        #     self.main_group.edge_indents = pos
+        # else:
 
-        self.rect = (pygame.Rect(*self.pos, *self.size))
 
         if text:
             self.text = text
@@ -63,7 +51,7 @@ class Button(pygame.sprite.Sprite):
         if image:
             self.image = HelpFunction().load_image(image)  # Передать только имя файла, лежащего в папке data
         else:
-            self.image = pygame.Surface(self.size, flags=0, pygame.SRCALPHA)
+            self.image = image
 
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
@@ -74,3 +62,26 @@ class Button(pygame.sprite.Sprite):
                 elif kwargs['change_position'] == 'уменьшение':
                     self.pos_in_group -= 1
 
+    def position(self):
+        number_sprite_line = 0
+        number_sprite_in_line = 0
+        allbreak = False
+        for sprite_lines in self.main_group.grouped_sprites:
+            for sprite in sprite_lines:
+                if sprite == self:
+                    self.x = self.main_group.edge_indent_x + self.main_group.indent_between_sprites_x * (
+                                number_sprite_in_line - 1) + self.main_group.wight_sprites * number_sprite_in_line
+                    self.y = self.main_group.edge_indent_y + self.main_group.indent_between_sprites_y * (
+                                number_sprite_line - 1) + self.main_group.height_sprites * number_sprite_line
+                    self.pos = [self.x, self.y]
+                    allbreak = True
+                    break
+                else:
+                    number_sprite_in_line += 1
+            if allbreak:
+                break
+            number_sprite_line += 1
+
+        self.rect = (pygame.Rect(*self.pos, *self.size))
+        if not self.image:
+            self.image = pygame.Surface(self.size)
