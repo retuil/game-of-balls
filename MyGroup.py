@@ -7,11 +7,12 @@ from MyException import *
 
 class MyGroup(pygame.sprite.Group):
     def __init__(self, indents_between_sprites, edge_indents, sprites_size, *sprites):
-        super().__init__(*sprites)
+
         self.indents_between_sprites = self.indent_between_sprites_x, self.indent_between_sprites_y = indents_between_sprites
-        self.sorted_sprites = self.sort_sprites()
         self.edge_indent_x, self.edge_indent_y = self.edge_indents = edge_indents
         self.width_sprites, self.height_sprites = self.sprites_size = sprites_size
+        super().__init__(*sprites)
+        self.sorted_sprites = self.sort_sprites()
         self.grouped_sprites = self.sprite_distribution()
 
 
@@ -23,6 +24,7 @@ class MyGroup(pygame.sprite.Group):
             self.update(sprite_pos=sprite_pos, change_position='увеличение')
         super().add(*sprites)
         self.sorted_sprites = self.sort_sprites()
+        self.grouped_sprites = self.sprite_distribution()
 
     def remove(self, *sprites):
         sprites_pos = list(map(lambda x: x.pos_in_group, list(sprites)))
@@ -30,12 +32,14 @@ class MyGroup(pygame.sprite.Group):
             self.update(sprite_pos=sprite_pos, change_position='уменьшение')
         super().remove(*sprites)
         self.sorted_sprites = self.sort_sprites()
+        self.grouped_sprites = self.sprite_distribution()
 
     def sort_sprites(self):
         sprite_list = self.sprites()
         for i in sprite_list:
             for n_sprite in range(len(sprite_list)):
-                if sprite_list[n_sprite].pos_in_group > sprite_list[n_sprite + 1].pos_in_group:
+                if n_sprite + 1 < len(sprite_list) and\
+                        sprite_list[n_sprite].pos_in_group > sprite_list[n_sprite + 1].pos_in_group:
                     sprite_list[n_sprite], sprite_list[n_sprite + 1] = sprite_list[n_sprite + 1], sprite_list[n_sprite]
         return sprite_list
 
@@ -57,10 +61,10 @@ class MyGroup(pygame.sprite.Group):
         len_of_group = 0
         number_in_group = 0
         for sprite in self.sorted_sprites:
-            if number_in_group == 0:
-                groups[fillible_group].append(sprite)
-                len_of_group += sprite.wight
-            else:
+            # if number_in_group == 0:
+            #     groups[fillible_group].append(sprite)
+            #     len_of_group += sprite.wight
+            # else:
                 if len_of_group + sprite.wight + self.edge_indent_x <= max_width:
                     groups[fillible_group].append(sprite)
                     len_of_group += sprite.wight + self.edge_indent_x
@@ -68,7 +72,7 @@ class MyGroup(pygame.sprite.Group):
                     groups.append([sprite])
                     len_of_group = sprite.wight
                     number_in_group = 0
-            number_in_group += 1
+                number_in_group += 1
         return groups
 
     def draw(self, surface):

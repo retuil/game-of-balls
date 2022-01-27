@@ -8,7 +8,7 @@ class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
                  size=[None, None], pos=[None, None]):
         super().__init__(*groups)
-
+        self.pos_in_group = pos_in_group
 
         in_main_group = False
         for group in groups:
@@ -16,13 +16,14 @@ class Button(pygame.sprite.Sprite):
                 if not in_main_group:
                     self.main_group = group
                     in_main_group = True
+                    group.add(self)
                 else:
                     raise ErrorNumberOfMyGroups('Спрайт добавлен более чем в одну группу \"MyGroup\"')
         # if not in_main_group:
         #     raise ErrorNumberOfMyGroups('Спрайт не добавлен в группу \"MyGroup\"')
 
 
-        self.pos_in_group = pos_in_group
+
 
 
         error_in_size = ErrorInitSprite('Не задан размер спрайтов в группе')
