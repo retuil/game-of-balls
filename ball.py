@@ -34,7 +34,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
 
         self.vx, self.vy = vx, vy
-        self.v = 700
+        self.v = 1100
 
         self.history = [None]
 
@@ -81,13 +81,13 @@ class Ball(pygame.sprite.Sprite):
         for box in board.box_list:
             if pygame.sprite.collide_rect(self, box):
                 if self.rect.x + board.r in range(box.rect.x + 1 - board.r, box.rect.x + board.cell_size + 1 + board.r):
-                    if self.rect.y <= box.rect.y + 1:
+                    if self.rect.y <= box.rect.y + board.r + 1:
                         self.vy = -abs(self.vy)
                         if self.history[-1] != box:
                             box.touch(board)
                             self.history.append(box)
                             break
-                    if self.rect.y + board.r >= box.rect.y + board.cell_size + 1:
+                    if self.rect.y + board.r >= box.rect.y + board.cell_size - board.r + 1:
                         self.vy = abs(self.vy)
                         if self.history[-1] != box:
                             box.touch(board)
@@ -95,15 +95,23 @@ class Ball(pygame.sprite.Sprite):
                             break
 
                 if self.rect.y + board.r in range(box.rect.y + 1 - board.r, box.rect.y + board.cell_size + 1 + board.r):
-                    if self.rect.x <= box.rect.x + 1:
+                    if self.rect.x <= box.rect.x + board.r + 1:
                         self.vx = -abs(self.vx)
                         if self.history[-1] != box:
                             box.touch(board)
                             self.history.append(box)
                             break
-                    if self.rect.x + board.r >= box.rect.x + board.cell_size + 1:
+                    if self.rect.x + board.r >= box.rect.x + board.cell_size - board.r + 1:
                         self.vx = abs(self.vx)
                         if self.history[-1] != box:
                             box.touch(board)
                             self.history.append(box)
                             break
+        if (self.rect.x < board.left - board.cell_size) or \
+                (self.rect.x > board.left + board.width * board.cell_size + board.cell_size) or \
+                (self.rect.y < board.top - board.cell_size) or \
+                (self.rect.y > board.top + board.height * (board.cell_size + 1) + board.cell_size):
+            print(1)
+            self.vx = 0
+            self.vy = 0
+            self.kill()
