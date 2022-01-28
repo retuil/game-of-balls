@@ -12,3 +12,7 @@ class ErrorLoadImage(Exception):
 
 class ErrorNumberOfMyGroups(Exception):
     pass
+
+
+class TextError(Exception):
+    pass

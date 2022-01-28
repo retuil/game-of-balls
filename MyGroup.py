@@ -6,8 +6,8 @@ from MyException import *
 #Спрайт может принадлежать только к одной группе класса MyGroup, количество других групп к которым может принадлежать спрайт не ограничено
 
 class MyGroup(pygame.sprite.Group):
-    def __init__(self, indents_between_sprites, edge_indents, sprites_size, *sprites):
-
+    def __init__(self, indents_between_sprites, edge_indents, sprites_size, screen, *sprites):
+        self.screen_size = screen.get_size()
         self.indents_between_sprites = self.indent_between_sprites_x, self.indent_between_sprites_y = indents_between_sprites
         self.edge_indent_x, self.edge_indent_y = self.edge_indents = edge_indents
         self.width_sprites, self.height_sprites = self.sprites_size = sprites_size
@@ -55,24 +55,24 @@ class MyGroup(pygame.sprite.Group):
     #     return same_size
 
     def sprite_distribution(self):
-        max_width = self.width_sprites - self.edge_indent_x * 2
+        max_width = self.screen_size[0] - self.edge_indent_x * 2
         groups = [[]]
         fillible_group = 0
         len_of_group = 0
         number_in_group = 0
         for sprite in self.sorted_sprites:
-            # if number_in_group == 0:
-            #     groups[fillible_group].append(sprite)
-            #     len_of_group += sprite.wight
-            # else:
-                if len_of_group + sprite.wight + self.edge_indent_x <= max_width:
-                    groups[fillible_group].append(sprite)
-                    len_of_group += sprite.wight + self.edge_indent_x
-                else:
-                    groups.append([sprite])
-                    len_of_group = sprite.wight
-                    number_in_group = 0
-                number_in_group += 1
+            if number_in_group == 0:
+                groups[fillible_group].append(sprite)
+                len_of_group += self.width_sprites
+            elif len_of_group + self.width_sprites + self.edge_indent_x <= max_width:
+                groups[fillible_group].append(sprite)
+                len_of_group += self.width_sprites + self.edge_indent_x
+            else:
+                groups.append([sprite])
+                len_of_group = self.width_sprites
+                number_in_group = 0
+                fillible_group += 1
+            number_in_group += 1
         return groups
 
     def draw(self, surface):

@@ -2,6 +2,7 @@ import pygame
 from MyException import *
 from Button import Button
 from MyGroup import MyGroup
+from HelpFunction import HelpFunction
 
 
 class StartMenu:
@@ -9,9 +10,13 @@ class StartMenu:
         screen = pygame.display.set_mode((800, 800))
         screen.fill((255, 255, 255))
         running = True
-        group = MyGroup([10, 10], [10, 10], [50, 100])
-        button = Button(0, group, color='yellow')
-        button = Button(1, group, color='yellow')
+        group = MyGroup([10, 10], [10, 10], [100, 100], screen)
+
+        #для создания текста на кнопке необходимо передать аргумент text=('текст', цвет(в формате(n, n, n)), шрифт(объект класса Font)
+
+        font = pygame.font.SysFont('arial', 10)
+        button = Button(0, group, color='yellow', text=('первая', (0, 0, 0), font))
+        button2 = Button(1, group, image='button.png', color='yellow')
         group.draw(screen)
         pygame.display.flip()
         while running:
