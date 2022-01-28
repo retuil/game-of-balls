@@ -27,15 +27,14 @@ class Button(pygame.sprite.Sprite):
 
 
         error_in_size = ErrorInitSprite('Не задан размер спрайтов в группе')
-        if size[0] is None and size[1] is None:
+        if self.main_group:
             my_group_size = self.main_group.sprites_size
             if my_group_size[0] is not None and my_group_size[1] is not None:
                 self.width, self.height = self.size = my_group_size
             else:
                 raise error_in_size
-        elif pos_in_group == 0:
+        elif size[0] is not None and size[1] is not None:
             self.width, self.height = self.size = size
-            self.main_group.sprites_size = size
         else:
             raise error_in_size
 
@@ -71,9 +70,9 @@ class Button(pygame.sprite.Sprite):
             for sprite in sprite_lines:
                 if sprite == self:
                     self.x = self.main_group.edge_indent_x + self.main_group.indent_between_sprites_x * (
-                                number_sprite_in_line - 1) + self.main_group.wight_sprites * number_sprite_in_line
+                                number_sprite_in_line) + self.main_group.width_sprites * number_sprite_in_line
                     self.y = self.main_group.edge_indent_y + self.main_group.indent_between_sprites_y * (
-                                number_sprite_line - 1) + self.main_group.height_sprites * number_sprite_line
+                                number_sprite_line) + self.main_group.height_sprites * number_sprite_line
                     self.pos = [self.x, self.y]
                     allbreak = True
                     break
@@ -82,7 +81,22 @@ class Button(pygame.sprite.Sprite):
             if allbreak:
                 break
             number_sprite_line += 1
+            number_sprite_in_line = 0
 
         self.rect = (pygame.Rect(*self.pos, *self.size))
         if not self.image:
             self.image = pygame.Surface(self.size)
+            self.image.fill(self.color)
+        else:
+            self.image = pygame.transform.scale(self.image, self.size)
+
+        if self.text:
+            text = self.text[0]
+            color_text = self.text[1]
+            font = self.text[2]
+            p_text = font.render(text, True, color_text)
+            width_text, height_text = font.size(text)
+            if width_text > self.width or height_text > self.height:
+                raise TextError('Текст больше кнопки, на которой размещается')
+            size_text = ((self.width - width_text) // 2, (self.height - height_text) // 2)
+            self.image.blit(p_text, size_text)
