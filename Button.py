@@ -43,9 +43,11 @@ class Button(pygame.sprite.Sprite):
         #     self.main_group.edge_indents = pos
         # else:
 
-
         if text:
             self.text = text
+        # Добавил:
+        else:
+            self.text = None
         if color:
             self.color = pygame.Color(color)
         if image:

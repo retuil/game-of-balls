@@ -26,4 +26,7 @@ class StartMenu:
         group.draw(screen)
         pygame.display.flip()
 
+# Добавил:
+pygame.init()
+
 a = StartMenu()
