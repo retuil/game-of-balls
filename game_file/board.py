@@ -18,6 +18,7 @@ class Board:
         self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
         self.vx, self.vy = 0, 0
         self.font = pygame.font.Font(None, 25)
+        self.stop = False
 
         self.all_sprites = pygame.sprite.Group()
         self.balls_sprites = pygame.sprite.Group()
@@ -75,6 +76,9 @@ class Board:
         if draw == 1:
             self.draw_aim(aim_coord, screen)
         self.draw_text(screen)
+        if self.stop:
+            return True
+        return False
 
     def check(self):
         for i in self.balls:

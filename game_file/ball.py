@@ -34,7 +34,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
 
         self.vx, self.vy = vx, vy
-        self.v = 1100
+        self.v = 800
 
         self.history = [None]
 

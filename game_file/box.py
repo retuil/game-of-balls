@@ -42,6 +42,8 @@ class Box(pygame.sprite.Sprite):
 
     def update(self, board):
         self.rect.y += board.cell_size
+        if self.rect.y >= board.top + (board.height - 2) * board.cell_size:
+            board.stop = True
 
     def touch(self, board):
         self.n -= 1
