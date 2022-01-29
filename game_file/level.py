@@ -1,6 +1,6 @@
 from random import randint
 
-from box import Box
+from game_file.box import Box
 
 
 def create_level(board, level):

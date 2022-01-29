@@ -2,9 +2,9 @@ from math import sqrt
 
 import pygame
 
-from ball import Ball
-from border import Border
-from level import next_level, create_level
+from game_file.ball import Ball
+from game_file.border import Border
+from game_file.level import next_level, create_level
 
 
 class Board:

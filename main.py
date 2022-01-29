@@ -1,7 +1,7 @@
 import pygame
 
-from board import Board
-from level import open_level_file
+from game_file.board import Board
+from game_file.level import open_level_file
 
 
 def main():

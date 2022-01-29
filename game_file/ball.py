@@ -4,7 +4,7 @@ from math import sqrt
 
 import pygame
 
-from level import next_level
+from game_file.level import next_level
 
 
 def load_image(name, colorkey=None):
