@@ -14,7 +14,7 @@ class StartMenu:
 
         #для создания текста на кнопке необходимо передать аргумент text=('текст', цвет(в формате(n, n, n)), шрифт(объект класса Font)
 
-        font = pygame.font.SysFont('arial', 10)
+        font = pygame.font.SysFont('arial', 20)
         button = Button(0, group, color='yellow', text=('первая', (0, 0, 0), font))
         button2 = Button(1, group, image='button.png', color='yellow')
         group.draw(screen)
@@ -23,6 +23,8 @@ class StartMenu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    group.check_any_click(event.pos)
         group.draw(screen)
         pygame.display.flip()
 
