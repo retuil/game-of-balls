@@ -34,8 +34,8 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
 
         self.vx, self.vy = vx, vy
-        self.v = 800
-
+        self.v = 400
+        self.mask = pygame.mask.from_surface(self.image)
         self.history = [None]
 
         board.all_sprites.add(self)
@@ -115,3 +115,7 @@ class Ball(pygame.sprite.Sprite):
             self.vx = 0
             self.vy = 0
             self.kill()
+
+        for bonus in board.bonus_list:
+            if pygame.sprite.collide_mask(self, bonus):
+                bonus.touch(board)

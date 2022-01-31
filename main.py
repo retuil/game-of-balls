@@ -16,10 +16,10 @@ def main():
 
 def game_event(screen, width, height, level=None):
     level = open_level_file(level)
-    board = Board((7, 11), (100, 100), 50, 5, level)
+    board = Board((7, 11), (100, 100), 50, screen, 5, level)
     running = True
     draw, aim_coord = None, None
-    r = False
+    r = (False, None)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,13 +34,15 @@ def game_event(screen, width, height, level=None):
             if event.type == pygame.MOUSEBUTTONUP:
                 if board.check():
                     draw = 2
-                    board.count_balls += 1
+                    if not board.count_balls:
+                        board.count_balls_ += 1
                     board.motion(*event.pos)
-        r = board.render(screen, draw, aim_coord)
-        if r:
+        r = board.render(draw, aim_coord)
+        if r[0]:
             break
         pygame.display.flip()
-    if r:
+    if r[0]:
+        # r[1] - значение для таблицы рекордов
         start_event(screen, width, height)
 
 

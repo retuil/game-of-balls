@@ -1,5 +1,6 @@
-from random import randint
+from random import randint, shuffle
 
+from game_file.add_ball_bonus import AddBallBonus
 from game_file.box import Box
 
 
@@ -10,31 +11,43 @@ def create_level(board, level):
             for j, el in enumerate(s.rstrip().split(',')):
                 if el == '.':
                     i_level.append(None)
+                elif el == '+':
+                    q = AddBallBonus(i, 2 + i, board)
+                    i_level.append(q)
+                    board.v_box_sprites.add(q)
+                    board.all_sprites.add(q)
+                    board.box_sprites.add(q)
+                    board.bonus_list.append(q)
                 else:
-                    q = Box(j, 2 + len(level) - i - len(level), board, int(el))
+                    q = Box(j, 2 + i, board, int(el))
                     i_level.append(q)
                     board.box_sprites.add(q)
             board.level.append(i_level)
 
 
 def next_level(board):
-    i_level = []
     k = 0
-    for i in range(board.width):
-        r = randint(1, 8)
-        if r < 6 and k <= board.width - 2:
-            k += 1
-            if r % 4 == 0:
-                q = Box(i, 2, board, 2 * board.score)
-            else:
-                q = Box(i, 2, board, board.score)
+    level = [randint(0, 2) * board.score or '.', randint(0, 2) * board.score or '.'] + \
+            [board.score] * (board.width - 4) + ['.', '+']
+    shuffle(level)
+    i_level = []
+    for i, el in enumerate(level):
+        if el == '.':
+            i_level.append(None)
+        elif el == '+':
+            q = AddBallBonus(i, 2, board)
+            i_level.append(q)
+            board.v_box_sprites.add(q)
+            board.all_sprites.add(q)
+            board.box_sprites.add(q)
+            board.bonus_list.append(q)
+        else:
+            q = Box(i, 2, board, int(el))
             i_level.append(q)
             board.v_box_sprites.add(q)
             board.all_sprites.add(q)
             board.box_sprites.add(q)
             board.box_list.append(q)
-        else:
-            i_level.append(None)
     board.score += 1
     board.level.append(i_level)
 
