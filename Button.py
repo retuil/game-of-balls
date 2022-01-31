@@ -6,10 +6,10 @@ from HelpFunction import HelpFunction
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
-                 size=[None, None], pos=[None, None]):
+                 size=[None, None], pos=[None, None], action=False):
         super().__init__(*groups)
         self.pos_in_group = pos_in_group
-
+        self.action = action
         in_main_group = False
         for group in groups:
             if type(group) == MyGroup:
@@ -102,3 +102,13 @@ class Button(pygame.sprite.Sprite):
                 raise TextError('Текст больше кнопки, на которой размещается')
             size_text = ((self.width - width_text) // 2, (self.height - height_text) // 2)
             self.image.blit(p_text, size_text)
+
+    def check_click_button(self, mouse_pos):
+        if mouse_pos[0] >= self.pos[0] and mouse_pos[0] <= self.pos[0] + self.width\
+            and mouse_pos[1] >= self.pos[1] and mouse_pos[1] <= self.pos[1] + self.height:
+            if self.action:
+                self.action()
+            else:
+                print('Нажата кнопка номер:', self.pos_in_group + 1)
+            return 1
+        return 0

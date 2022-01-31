@@ -79,3 +79,8 @@ class MyGroup(pygame.sprite.Group):
         for sprite in self.sorted_sprites:
             sprite.position()
         super().draw(surface)
+
+    def check_any_click(self, mouse_pos):
+        for sprite in self.sorted_sprites:
+            if sprite.check_click_button(mouse_pos):
+                break
