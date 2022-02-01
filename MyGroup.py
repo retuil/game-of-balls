@@ -11,7 +11,8 @@ class MyGroup(pygame.sprite.Group):
         self.indents_between_sprites = self.indent_between_sprites_x, self.indent_between_sprites_y = indents_between_sprites
         self.edge_indent_x, self.edge_indent_y = self.edge_indents = edge_indents
         self.width_sprites, self.height_sprites = self.sprites_size = sprites_size
-        super().__init__(*sprites)
+        pygame.sprite.AbstractGroup.__init__(self)
+        self.add(*sprites)
         self.sorted_sprites = self.sort_sprites()
         self.grouped_sprites = self.sprite_distribution()
 
@@ -19,8 +20,8 @@ class MyGroup(pygame.sprite.Group):
     def add(self, *sprites):
         sprites_pos = list(map(lambda x: x.pos_in_group, list(sprites)))
         for sprite_pos in sprites_pos:
-            if sprites_pos.count(sprite_pos) != 1:
-                raise ErrorAddingToGroup('В группе добавляемых спрайтов есть спрайты с одинаковой позицией')
+            # if sprites_pos.count(sprite_pos) != 1:
+            #     raise ErrorAddingToGroup('В группе добавляемых спрайтов есть спрайты с одинаковой позицией')
             self.update(sprite_pos=sprite_pos, change_position='увеличение')
         super().add(*sprites)
         self.sorted_sprites = self.sort_sprites()

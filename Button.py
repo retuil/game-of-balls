@@ -7,7 +7,7 @@ from HelpFunction import HelpFunction
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
                  size=[None, None], pos=[None, None], action=False):
-        super().__init__(*groups)
+        super().__init__(())
         self.pos_in_group = pos_in_group
         self.action = action
         in_main_group = False
@@ -26,7 +26,6 @@ class Button(pygame.sprite.Sprite):
 
 
 
-        error_in_size = ErrorInitSprite('Не задан размер спрайтов в группе')
         if self.main_group:
             my_group_size = self.main_group.sprites_size
             if my_group_size[0] is not None and my_group_size[1] is not None:
@@ -36,12 +35,16 @@ class Button(pygame.sprite.Sprite):
         elif size[0] is not None and size[1] is not None:
             self.width, self.height = self.size = size
         else:
-            raise error_in_size
+            raise ErrorInitSprite('Не задан размер спрайтов в группе')
 
         # if pos[0] is not None and pos[1] is not None and pos_in_group == 0:
         #     self.left, self.top = self.pos = pos
         #     self.main_group.edge_indents = pos
         # else:
+
+        super().__init__(*groups)
+
+
 
         if text:
             self.text = text
