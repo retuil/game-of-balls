@@ -38,7 +38,7 @@ class Button(pygame.sprite.Sprite):
             self.main_group = False
             if pos[0] is not None and pos[1] is not None and size[0] is not None and size[1] is not None:
                 self.pos = pos
-                self.size = size
+                self.width, self.height = self.size = size
 
                 self.generate_button()
             else:
