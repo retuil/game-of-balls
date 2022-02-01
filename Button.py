@@ -1,26 +1,48 @@
 import pygame
 from MyException import *
-from MyGroup import MyGroup
+from SortedGroup import SortedGroup
 from HelpFunction import HelpFunction
+
 
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
                  size=[None, None], pos=[None, None], action=False):
         super().__init__(())
+
+        if text:
+            self.text = text
+        # Добавил:
+        else:
+            self.text = None
+        if color:
+            self.color = pygame.Color(color)
+        if image:
+            self.image = HelpFunction().load_image(image)  # Передать только имя файла, лежащего в папке data
+        else:
+            self.image = image
+
+
         self.pos_in_group = pos_in_group
         self.action = action
         in_main_group = False
         for group in groups:
-            if type(group) == MyGroup:
+            if type(group) == SortedGroup:
                 if not in_main_group:
                     self.main_group = group
                     in_main_group = True
                     group.add(self)
                 else:
                     raise ErrorNumberOfMyGroups('Спрайт добавлен более чем в одну группу \"MyGroup\"')
-        # if not in_main_group:
-        #     raise ErrorNumberOfMyGroups('Спрайт не добавлен в группу \"MyGroup\"')
+        if not in_main_group:
+            self.main_group = False
+            if pos[0] is not None and pos[1] is not None and size[0] is not None and size[1] is not None:
+                self.pos = pos
+                self.size = size
+
+                self.generate_button()
+            else:
+                raise ErrorInitSprite("Не задан размер или местоположение спрайта, который не находится в группе MyGroup")
 
 
 
@@ -46,17 +68,7 @@ class Button(pygame.sprite.Sprite):
 
 
 
-        if text:
-            self.text = text
-        # Добавил:
-        else:
-            self.text = None
-        if color:
-            self.color = pygame.Color(color)
-        if image:
-            self.image = HelpFunction().load_image(image)  # Передать только имя файла, лежащего в папке data
-        else:
-            self.image = image
+
 
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
@@ -88,6 +100,37 @@ class Button(pygame.sprite.Sprite):
             number_sprite_line += 1
             number_sprite_in_line = 0
 
+        self.generate_button()
+
+        # self.rect = (pygame.Rect(*self.pos, *self.size))
+        # if not self.image:
+        #     self.image = pygame.Surface(self.size)
+        #     self.image.fill(self.color)
+        # else:
+        #     self.image = pygame.transform.scale(self.image, self.size)
+        #
+        # if self.text:
+        #     text = self.text[0]
+        #     color_text = self.text[1]
+        #     font = self.text[2]
+        #     p_text = font.render(text, True, color_text)
+        #     width_text, height_text = font.size(text)
+        #     if width_text > self.width or height_text > self.height:
+        #         raise TextError('Текст больше кнопки, на которой размещается')
+        #     size_text = ((self.width - width_text) // 2, (self.height - height_text) // 2)
+        #     self.image.blit(p_text, size_text)
+
+    def check_click_button(self, mouse_pos):
+        if mouse_pos[0] >= self.pos[0] and mouse_pos[0] <= self.pos[0] + self.width\
+            and mouse_pos[1] >= self.pos[1] and mouse_pos[1] <= self.pos[1] + self.height:
+            if self.action:
+                self.action()
+            else:
+                print('Нажата кнопка номер:', self.pos_in_group + 1)
+            return 1
+        return 0
+
+    def generate_button(self):
         self.rect = (pygame.Rect(*self.pos, *self.size))
         if not self.image:
             self.image = pygame.Surface(self.size)
@@ -105,13 +148,3 @@ class Button(pygame.sprite.Sprite):
                 raise TextError('Текст больше кнопки, на которой размещается')
             size_text = ((self.width - width_text) // 2, (self.height - height_text) // 2)
             self.image.blit(p_text, size_text)
-
-    def check_click_button(self, mouse_pos):
-        if mouse_pos[0] >= self.pos[0] and mouse_pos[0] <= self.pos[0] + self.width\
-            and mouse_pos[1] >= self.pos[1] and mouse_pos[1] <= self.pos[1] + self.height:
-            if self.action:
-                self.action()
-            else:
-                print('Нажата кнопка номер:', self.pos_in_group + 1)
-            return 1
-        return 0
