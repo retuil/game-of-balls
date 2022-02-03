@@ -8,47 +8,68 @@ from HelpFunction import HelpFunction
 
 class StartProgram:
     def __init__(self):
+        self.screen = pygame.display.set_mode((550, 800))
+        self.screen.fill((0, 0, 0))
         self.StartScreen()
 
     def StartScreen(self):
-        screen = pygame.display.set_mode((550, 800))
-        screen.fill((0, 0, 0))
+        self.screen.fill((0, 0, 0))
         running = True
         enemy_group1 = MyGroup()
         font1 = pygame.font.SysFont('arial', 40)
         text1 = font1.render("Welcome to", True, (119, 221, 119))
         text_x1 = 550 // 2 - text1.get_width() // 2
         text_y1 = 100
-        screen.blit(text1, (text_x1, text_y1))
+        self.screen.blit(text1, (text_x1, text_y1))
         font2 = pygame.font.SysFont('arial', 90)
         text2 = font2.render("GAME OF BALL", True, (66, 255, 0))
         text_x2 = 550 // 2 - text2.get_width() // 2
         text_y2 = 160
-        screen.blit(text2, (text_x2, text_y2))
-        start_button = Button(0, enemy_group1, color=(0, 165, 80), pos=(10, 660), size=(530, 100), action=self.ChouseLevel,
+        self.screen.blit(text2, (text_x2, text_y2))
+        start_button = Button(0, enemy_group1, color=(0, 165, 80), pos=(10, 660), size=(530, 100), action=self.ChouseMod,
                          text=('Начать', (0, 0, 0), pygame.font.SysFont('arial', 40)))
-        enemy_group1.draw(screen)
+        enemy_group1.draw(self.screen)
         pygame.display.flip()
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    enemy_group1.check_any_click(event.pos)
+                    if enemy_group1.check_any_click(event.pos):
+                        running = False
+                        break
+
+    def ChouseMod(self):
+        self.screen.fill((0, 0, 0))
+        running = True
+        font = pygame.font.SysFont('arial', 60)
+        group = SortedGroup((0, 80), (20, 170), (500, 110), self.screen)
+        button_p = Button(0, group, text=('Продолжить игру', (0, 0, 0), font), color=(0, 165, 80))
+        button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font), action=self.ChouseLevel, color=(0, 165, 80))
+        button_t = Button(2, group, text=('Рекорды', (0, 0, 0), font), color=(0, 165, 80))
+        group.draw(self.screen)
         pygame.display.flip()
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if group.check_any_click(event.pos):
+                        running = False
+                        break
+
 
     def ChouseLevel(self):
-        screen = pygame.display.set_mode((550, 800))
-        screen.fill((0, 0, 0))
+        self.screen.fill((0, 0, 0))
         running = True
-        group = SortedGroup([10, 10], [10, 120], [90, 90], screen)
+        group = SortedGroup([10, 10], [10, 120], [90, 90], self.screen)
         enemy_group = MyGroup()
 
         font = pygame.font.SysFont('arial', 40)
         text = font.render("Выберите уровень", True, (100, 255, 100))
         text_x = 550 // 2 - text.get_width() // 2
         text_y = 25
-        screen.blit(text, (text_x, text_y))
+        self.screen.blit(text, (text_x, text_y))
 
 
         #для создания текста на кнопке необходимо передать аргумент text=('текст', цвет(в формате(n, n, n)), шрифт(объект класса Font)
@@ -81,18 +102,20 @@ class StartProgram:
         button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font))
         buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=self.a,
                          text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
-        group.draw(screen)
-        enemy_group.draw(screen)
+        group.draw(self.screen)
+        enemy_group.draw(self.screen)
         pygame.display.flip()
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    group.check_any_click(event.pos)
-                    enemy_group.check_any_click(event.pos)
-        group.draw(screen)
-        pygame.display.flip()
+                    if group.check_any_click(event.pos) or enemy_group.check_any_click(event.pos):
+                        pass
+                        # running = False
+                        # break
+                        #TODO: Разкоментировать когда будет добавлен старт уровня
+
 
 
     def a(self):
