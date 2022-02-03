@@ -4,7 +4,6 @@ from SortedGroup import SortedGroup
 from HelpFunction import HelpFunction
 
 
-
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
                  size=[None, None], pos=[None, None], action=False):
@@ -12,7 +11,6 @@ class Button(pygame.sprite.Sprite):
 
         if text:
             self.text = text
-        # Добавил:
         else:
             self.text = None
         if color:
@@ -21,7 +19,6 @@ class Button(pygame.sprite.Sprite):
             self.image = HelpFunction().load_image(image)  # Передать только имя файла, лежащего в папке data
         else:
             self.image = image
-
 
         self.pos_in_group = pos_in_group
         self.action = action
@@ -42,11 +39,8 @@ class Button(pygame.sprite.Sprite):
 
                 self.generate_button()
             else:
-                raise ErrorInitSprite("Не задан размер или местоположение спрайта, который не находится в группе MyGroup")
-
-
-
-
+                raise ErrorInitSprite(
+                    "Не задан размер или местоположение спрайта, который не находится в группе MyGroup")
 
         if self.main_group:
             my_group_size = self.main_group.sprites_size
@@ -66,10 +60,6 @@ class Button(pygame.sprite.Sprite):
 
         super().__init__(*groups)
 
-
-
-
-
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
         if 'sprite_pos' in kwargs.keys():
@@ -87,9 +77,9 @@ class Button(pygame.sprite.Sprite):
             for sprite in sprite_lines:
                 if sprite == self:
                     self.x = self.main_group.edge_indent_x + self.main_group.indent_between_sprites_x * (
-                                number_sprite_in_line) + self.main_group.width_sprites * number_sprite_in_line
+                        number_sprite_in_line) + self.main_group.width_sprites * number_sprite_in_line
                     self.y = self.main_group.edge_indent_y + self.main_group.indent_between_sprites_y * (
-                                number_sprite_line) + self.main_group.height_sprites * number_sprite_line
+                        number_sprite_line) + self.main_group.height_sprites * number_sprite_line
                     self.pos = [self.x, self.y]
                     allbreak = True
                     break
@@ -121,14 +111,14 @@ class Button(pygame.sprite.Sprite):
         #     self.image.blit(p_text, size_text)
 
     def check_click_button(self, mouse_pos):
-        if mouse_pos[0] >= self.pos[0] and mouse_pos[0] <= self.pos[0] + self.width\
-            and mouse_pos[1] >= self.pos[1] and mouse_pos[1] <= self.pos[1] + self.height:
+        if self.pos[0] <= mouse_pos[0] <= self.pos[0] + self.width \
+                and self.pos[1] <= mouse_pos[1] <= self.pos[1] + self.height:
             if self.action:
-                self.action()
+                return True, self.action
             else:
-                print('Нажата кнопка номер:', self.pos_in_group + 1)
-            return 1
-        return 0
+                print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
+            return True, None
+        return False, False
 
     def generate_button(self):
         self.rect = (pygame.Rect(*self.pos, *self.size))
