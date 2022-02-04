@@ -3,6 +3,8 @@ from Button import Button
 from SortedGroup import SortedGroup
 from MyGroup import MyGroup
 
+from game_file.board import Board
+from game_file.level import open_level_file
 
 def start_event():
     global screen, width, height
@@ -28,7 +30,7 @@ def start_event():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONUP:
                 click = enemy_group1.check_any_click(event.pos)
                 if click[0]:
                     if click[1] is not None:
@@ -52,7 +54,7 @@ def choice_mod_event():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONUP:
                 click = group.check_any_click(event.pos)
                 if click[0]:
                     if click[1] is not None:
@@ -103,7 +105,7 @@ def choice_level_event():
     button23 = Button(22, group, color='yellow', text=('23', (0, 0, 0), font))
     button24 = Button(23, group, color='yellow', text=('24', (0, 0, 0), font))
     button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font))
-    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=a,
+    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
                      text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
     group.draw(screen)
     enemy_group.draw(screen)
@@ -112,7 +114,7 @@ def choice_level_event():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONUP:
                 click1 = group.check_any_click(event.pos)
                 click2 = enemy_group.check_any_click(event.pos)
                 if click1[0]:
@@ -125,11 +127,80 @@ def choice_level_event():
                         click2[1]()
                     running = False
                     break
-                # TODO: Разкоментировать когда будет добавлен старт уровня
 
 
-def a():
-    print('УРА')
+def game_event(level=None):
+    global screen, width, height
+    level = open_level_file(level)
+    board = Board((7, 11), (100, 100), 50, screen, 5, level)
+    running = True
+    draw, aim_coord = None, None
+    r = (False, None)
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if board.check():
+                    draw = 1
+                    aim_coord = event.pos
+            if event.type == pygame.MOUSEMOTION and draw == 1:
+                if board.check():
+                    aim_coord = event.pos
+            if event.type == pygame.MOUSEBUTTONUP:
+                if board.check():
+                    draw = 2
+                    if not board.count_balls:
+                        board.count_balls_ += 1
+                    board.motion(*event.pos)
+        r = board.render(draw, aim_coord)
+        if r[0]:
+            break
+        pygame.display.flip()
+    if r[0]:
+        # r[1] - значение для таблицы рекордов
+        start_event()
+
+#
+# def start_event():
+#     global screen, width, height
+#     running = True
+#     game = False
+#     screen.fill((0, 0, 0))
+#     font = pygame.font.Font(None, 50)
+#     text = font.render(f'Нажмите для старта', True, pygame.Color('white'))
+#     text_x = width // 2 - text.get_width() // 2
+#     text_y = height // 2 - text.get_height() // 2
+#     text_w = text.get_width()
+#     text_h = text.get_height()
+#     screen.blit(text, (text_x, text_y))
+#     pygame.draw.rect(screen, pygame.Color('white'), (text_x - 10, text_y - 10,
+#                                                      text_w + 20, text_h + 20), 1)
+#
+#     pygame.display.flip()
+#     while running:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 running = False
+#             if event.type == pygame.MOUSEBUTTONUP:
+#                 x, y = event.pos
+#                 if (x > text_x - 10) and (x < text_x + text_w + 10) and \
+#                         (y > text_y - 10) and (y < text_y + text_h + 10):
+#                     game = True
+#                     break
+#         if game:
+#             break
+#     if game:
+#         game_event()
+
+
+def end_event():
+    global screen, width, height
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
 
 def main():
