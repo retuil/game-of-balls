@@ -34,7 +34,7 @@ class Ball(pygame.sprite.Sprite):
         vx, vy = vx / sqrt(vx ** 2 + vy ** 2), -vy / sqrt(vx ** 2 + vy ** 2)
 
         self.vx, self.vy = vx, vy
-        self.v = 800
+        self.v = 750
         self.mask = pygame.mask.from_surface(self.image)
         self.history = [None]
 
@@ -46,6 +46,12 @@ class Ball(pygame.sprite.Sprite):
         self.y1 += self.vy * self.v * c / 1000
         self.rect.x, self.rect.y = int(self.x1), int(self.y1)
 
+        if self.x1 < board.left - board.cell_size or self.x1 > board.left + board.cell_size * (board.width + 1) or \
+                self.y1 < board.top - board.cell_size or self.y1 > board.top + board.cell_size * (board.height + 1):
+            self.rect.x = self.x1 = board.left + board.width * board.cell_size // 2
+            self.rect.y = self.y1 = board.top + board.cell_size * (board.height - 0.25)
+            self.vx = 0
+            self.vy = abs(self.vy)
         if pygame.sprite.spritecollideany(self, board.vertical_borders):
             if self.rect.x > board.left + board.width // 2:
                 self.vx = -abs(self.vx)

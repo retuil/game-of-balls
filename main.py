@@ -137,7 +137,7 @@ def choice_level_event():
     button24 = Button(23, group, color='yellow', text=('24', (0, 0, 0), font), action=in_developing)
     button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font), action=in_developing)
     button_i = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
-                     text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
+                      text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
     group.draw(screen)
     enemy_group.draw(screen)
     pygame.display.flip()
@@ -167,6 +167,15 @@ def game_event(level=None):
     global screen, width, height
     level = open_level_file(level)
     board = Board((7, 11), (100, 100), 50, screen, 5, level)
+
+    font = pygame.font.SysFont('arial', 40)
+    btn_group_1 = MyGroup()
+    btn_group_2 = SortedGroup((0, 10), (board.left, board.top + board.cell_size * (board.height + 1)), (350, 50),
+                              screen)
+    btn_cancel = Button(0, btn_group_1, text=('Покинуть игру', (0, 0, 0), font),
+                        color=(0, 165, 80), pos=(board.left, 25), size=(350, 50))
+    btn_down = Button(0, btn_group_2, text=('Вниз', (0, 0, 0), font), color=(0, 165, 80))
+    btn_speed = Button(1, btn_group_2, text=('Ускорить', (0, 0, 0), font), color=(0, 165, 80))
     running = True
     draw, aim_coord = None, None
     r = (False, None)
@@ -175,19 +184,39 @@ def game_event(level=None):
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if board.check():
+                if board.check() and board.left < event.pos[0] < board.left + board.cell_size * board.width and \
+                        board.top < event.pos[1] < board.top + board.cell_size * board.height:
                     draw = 1
                     aim_coord = event.pos
             if event.type == pygame.MOUSEMOTION and draw == 1:
-                if board.check():
+                if board.check() and board.left < event.pos[0] < board.left + board.cell_size * board.width and \
+                        board.top < event.pos[1] < board.top + board.cell_size * board.height:
                     aim_coord = event.pos
             if event.type == pygame.MOUSEBUTTONUP:
-                if board.check():
+                if board.check() and board.left < event.pos[0] < board.left + board.cell_size * board.width and \
+                        board.top < event.pos[1] < board.top + board.cell_size * board.height:
                     draw = 2
                     if not board.count_balls:
                         board.count_balls_ += 1
                     board.motion(*event.pos)
+                else:
+                    cancel = btn_cancel.check_click_button(event.pos)
+                    down = btn_down.check_click_button(event.pos)
+                    speed = btn_speed.check_click_button(event.pos)
+                    if speed[0]:
+                        for ball in board.balls:
+                            ball.v = 850
+                    elif down[0]:
+                        for ball in board.balls:
+                            ball.rect.y = ball.y1 = board.top + board.cell_size * (board.height - 0.5)
+                            ball.vx = 0
+                            ball.vy = abs(ball.vy)
+                    elif cancel[0]:
+                        board.stop = True
+
         r = board.render(draw, aim_coord)
+        btn_group_1.draw(screen)
+        btn_group_2.draw(screen)
         if r[0]:
             break
         pygame.display.flip()
@@ -212,7 +241,7 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 550, 800
+    size = width, height = 550, 850
     level_of_list = [1]
     screen = pygame.display.set_mode(size)
     main()

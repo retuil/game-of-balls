@@ -17,7 +17,7 @@ class Board:
         self.x = self.x_ = self.left + self.width * self.cell_size // 2 - self.r
         self.y = self.top + self.height * self.cell_size - 2 * self.r - 2
         self.vx, self.vy = 0, 0
-        self.font = pygame.font.Font(None, 25)
+        self.font = pygame.font.SysFont('arial', 25)
         self.stop = False
         self.screen = screen
 
@@ -77,13 +77,13 @@ class Board:
         if draw == 1:
             self.draw_aim(aim_coord)
         self.draw_text()
-        if self.stop or (not self.infinite_level and not len(self.box_sprites)):
+        if self.stop or (not self.infinite_level and not len(self.box_sprites) and self.check()):
             return True, self.score
         return False, self.score
 
     def check(self):
         for i in self.balls:
-            if i.vx != 0 and i.vy != 0:
+            if i.vx != 0 or i.vy != 0:
                 return False
         return True
 
@@ -135,3 +135,6 @@ class Board:
 
         text = self.font.render(f'Счёт: {self.score - 1}', True, pygame.Color('white'))
         self.screen.blit(text, (self.left, self.top + self.height * self.cell_size + 5))
+
+        text = self.font.render(f'Шаров: {self.count_balls_}', True, pygame.Color('white'))
+        self.screen.blit(text, (self.left + self.cell_size * 2, self.top + self.height * self.cell_size + 5))

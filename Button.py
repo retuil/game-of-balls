@@ -114,14 +114,14 @@ class Button(pygame.sprite.Sprite):
         if self.pos[0] <= mouse_pos[0] <= self.pos[0] + self.width \
                 and self.pos[1] <= mouse_pos[1] <= self.pos[1] + self.height:
             if self.action is None:
-                print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
+                # print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
                 return True, None
             else:
                 if self.text[0].isdigit():
                     return int(self.text[0]), self.action
                 else:
                     return True, self.action
-        return 0, False
+        return False, False
 
     def generate_button(self):
         self.rect = (pygame.Rect(*self.pos, *self.size))
