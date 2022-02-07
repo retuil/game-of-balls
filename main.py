@@ -20,7 +20,7 @@ def start_event():
     font2 = pygame.font.SysFont('arial', 90)
     text2 = font2.render("GAME OF BALL", True, (66, 255, 0))
     text_x2 = width // 2 - text2.get_width() // 2
-    text_y2 = 160   #сделать универсально положение для разных экранов
+    text_y2 = 160  # сделать универсально положение для разных экранов
     screen.blit(text2, (text_x2, text_y2))
     start_button = Button(0, enemy_group1, color=(0, 165, 80), pos=(10, 660), size=(530, 100),
                           action=choice_mod_event,
@@ -66,7 +66,6 @@ def in_developing():
             screen.blit(screen2, (0, 0))
             pygame.display.flip()
             return True
-
 
 
 def choice_mod_event():
@@ -137,7 +136,7 @@ def choice_level_event():
     button23 = Button(22, group, color='yellow', text=('23', (0, 0, 0), font), action=in_developing)
     button24 = Button(23, group, color='yellow', text=('24', (0, 0, 0), font), action=in_developing)
     button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font), action=in_developing)
-    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
+    button_i = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
                      text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
     group.draw(screen)
     enemy_group.draw(screen)
@@ -153,8 +152,10 @@ def choice_level_event():
                     if click1[1] is not None:
                         if click1[0] in level_of_list:
                             click1[1](click1[0])
-                    running = False
-                    break
+                            running = False
+                            break
+                        else:
+                            click1[1]()
                 elif click2[0]:
                     if click2[1] is not None:
                         click2[1]()
@@ -193,38 +194,6 @@ def game_event(level=None):
     if r[0]:
         # r[1] - значение для таблицы рекордов
         start_event()
-
-
-# def start_event():
-#     global screen, width, height
-#     running = True
-#     game = False
-#     screen.fill((0, 0, 0))
-#     font = pygame.font.Font(None, 50)
-#     text = font.render(f'Нажмите для старта', True, pygame.Color('white'))
-#     text_x = width // 2 - text.get_width() // 2
-#     text_y = height // 2 - text.get_height() // 2
-#     text_w = text.get_width()
-#     text_h = text.get_height()
-#     screen.blit(text, (text_x, text_y))
-#     pygame.draw.rect(screen, pygame.Color('white'), (text_x - 10, text_y - 10,
-#                                                      text_w + 20, text_h + 20), 1)
-#
-#     pygame.display.flip()
-#     while running:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-#             if event.type == pygame.MOUSEBUTTONUP:
-#                 x, y = event.pos
-#                 if (x > text_x - 10) and (x < text_x + text_w + 10) and \
-#                         (y > text_y - 10) and (y < text_y + text_h + 10):
-#                     game = True
-#                     break
-#         if game:
-#             break
-#     if game:
-#         game_event()
 
 
 def end_event():
