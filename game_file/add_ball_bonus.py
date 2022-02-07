@@ -39,3 +39,8 @@ class AddBallBonus(pygame.sprite.Sprite):
         board.count_balls_ += 1
         board.bonus_list.remove(self)
         self.kill()
+
+    def visible(self, board):
+        board.v_box_sprites.add(self)
+        board.all_sprites.add(self)
+        board.bonus_list.append(self)

@@ -12,14 +12,11 @@ def create_level(board, level):
                 if el == '.':
                     i_level.append(None)
                 elif el == '+':
-                    q = AddBallBonus(i, 2 + i, board)
+                    q = AddBallBonus(j, 2 - i, board)
                     i_level.append(q)
-                    board.v_box_sprites.add(q)
-                    board.all_sprites.add(q)
                     board.box_sprites.add(q)
-                    board.bonus_list.append(q)
                 else:
-                    q = Box(j, 2 + i, board, int(el))
+                    q = Box(j, 2 - i, board, int(el))
                     i_level.append(q)
                     board.box_sprites.add(q)
             board.level.append(i_level)
@@ -55,7 +52,7 @@ def next_level(board):
 def open_level_file(level):
     if level is None:
         return None
-    f = open(f"levels/{level}", encoding="utf8")
+    f = open(f"levels/level_{level}.txt", encoding="utf8")
     level = f.readlines()
     f.close()
     return level

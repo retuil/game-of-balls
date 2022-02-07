@@ -52,3 +52,8 @@ class Box(pygame.sprite.Sprite):
             self.kill()
         else:
             self.image = Box.image[self.n % 7]
+
+    def visible(self, board):
+        board.v_box_sprites.add(self)
+        board.all_sprites.add(self)
+        board.box_list.append(self)

@@ -6,6 +6,7 @@ from MyGroup import MyGroup
 from game_file.board import Board
 from game_file.level import open_level_file
 
+
 def start_event():
     global screen, width, height
     screen.fill((0, 0, 0))
@@ -46,7 +47,8 @@ def choice_mod_event():
     font = pygame.font.SysFont('arial', 60)
     group = SortedGroup((0, 80), (20, 170), (500, 110), screen)
     button_p = Button(0, group, text=('Продолжить игру', (0, 0, 0), font), color=(0, 165, 80))
-    button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font), action=choice_level_event, color=(0, 165, 80))
+    button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font),
+                      action=choice_level_event, color=(0, 165, 80))
     button_t = Button(2, group, text=('Рекорды', (0, 0, 0), font), color=(0, 165, 80))
     group.draw(screen)
     pygame.display.flip()
@@ -64,7 +66,7 @@ def choice_mod_event():
 
 
 def choice_level_event():
-    global screen, width, height
+    global screen, width, height, level_of_list
     screen.fill((0, 0, 0))
     running = True
     group = SortedGroup([10, 10], [10, 120], [90, 90], screen)
@@ -80,33 +82,33 @@ def choice_level_event():
     # text=('текст', цвет(в формате(n, n, n)), шрифт(объект класса Font)
 
     font = pygame.font.SysFont('arial', 20)
-    button = Button(0, group, color='yellow', text=('1', (0, 0, 0), font))
-    button2 = Button(1, group, color='yellow', text=('2', (0, 0, 0), font))
-    button3 = Button(2, group, color='yellow', text=('3', (0, 0, 0), font))
-    button4 = Button(3, group, color='yellow', text=('4', (0, 0, 0), font))
-    button5 = Button(4, group, color='yellow', text=('5', (0, 0, 0), font))
-    button6 = Button(5, group, color='yellow', text=('6', (0, 0, 0), font))
-    button7 = Button(6, group, color='yellow', text=('7', (0, 0, 0), font))
-    button8 = Button(7, group, color='yellow', text=('8', (0, 0, 0), font))
-    button9 = Button(8, group, color='yellow', text=('9', (0, 0, 0), font))
-    button10 = Button(9, group, color='yellow', text=('10', (0, 0, 0), font))
-    button11 = Button(10, group, color='yellow', text=('11', (0, 0, 0), font))
-    button12 = Button(11, group, color='yellow', text=('12', (0, 0, 0), font))
-    button13 = Button(12, group, color='yellow', text=('13', (0, 0, 0), font))
-    button14 = Button(13, group, color='yellow', text=('14', (0, 0, 0), font))
-    button15 = Button(14, group, color='yellow', text=('15', (0, 0, 0), font))
-    button16 = Button(15, group, color='yellow', text=('16', (0, 0, 0), font))
-    button17 = Button(16, group, color='yellow', text=('17', (0, 0, 0), font))
-    button18 = Button(17, group, color='yellow', text=('18', (0, 0, 0), font))
-    button19 = Button(18, group, color='yellow', text=('19', (0, 0, 0), font))
-    button20 = Button(19, group, color='yellow', text=('20', (0, 0, 0), font))
-    button21 = Button(20, group, color='yellow', text=('21', (0, 0, 0), font))
-    button22 = Button(21, group, color='yellow', text=('22', (0, 0, 0), font))
-    button23 = Button(22, group, color='yellow', text=('23', (0, 0, 0), font))
-    button24 = Button(23, group, color='yellow', text=('24', (0, 0, 0), font))
-    button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font))
-    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
-                     text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
+    button = Button(0, group, color='yellow', action=game_event, text=('1', (0, 0, 0), font))
+    button2 = Button(1, group, color='yellow', action=game_event, text=('2', (0, 0, 0), font))
+    button3 = Button(2, group, color='yellow', action=game_event, text=('3', (0, 0, 0), font))
+    button4 = Button(3, group, color='yellow', action=game_event, text=('4', (0, 0, 0), font))
+    button5 = Button(4, group, color='yellow', action=game_event, text=('5', (0, 0, 0), font))
+    button6 = Button(5, group, color='yellow', action=game_event, text=('6', (0, 0, 0), font))
+    button7 = Button(6, group, color='yellow', action=game_event, text=('7', (0, 0, 0), font))
+    button8 = Button(7, group, color='yellow', action=game_event, text=('8', (0, 0, 0), font))
+    button9 = Button(8, group, color='yellow', action=game_event, text=('9', (0, 0, 0), font))
+    button10 = Button(9, group, color='yellow', action=game_event, text=('10', (0, 0, 0), font))
+    button11 = Button(10, group, color='yellow', action=game_event, text=('11', (0, 0, 0), font))
+    button12 = Button(11, group, color='yellow', action=game_event, text=('12', (0, 0, 0), font))
+    button13 = Button(12, group, color='yellow', action=game_event, text=('13', (0, 0, 0), font))
+    button14 = Button(13, group, color='yellow', action=game_event, text=('14', (0, 0, 0), font))
+    button15 = Button(14, group, color='yellow', action=game_event, text=('15', (0, 0, 0), font))
+    button16 = Button(15, group, color='yellow', action=game_event, text=('16', (0, 0, 0), font))
+    button17 = Button(16, group, color='yellow', action=game_event, text=('17', (0, 0, 0), font))
+    button18 = Button(17, group, color='yellow', action=game_event, text=('18', (0, 0, 0), font))
+    button19 = Button(18, group, color='yellow', action=game_event, text=('19', (0, 0, 0), font))
+    button20 = Button(19, group, color='yellow', action=game_event, text=('20', (0, 0, 0), font))
+    button21 = Button(20, group, color='yellow', action=game_event, text=('21', (0, 0, 0), font))
+    button22 = Button(21, group, color='yellow', action=game_event, text=('22', (0, 0, 0), font))
+    button23 = Button(22, group, color='yellow', action=game_event, text=('23', (0, 0, 0), font))
+    button24 = Button(23, group, color='yellow', action=game_event, text=('24', (0, 0, 0), font))
+    button25 = Button(24, group, color='yellow', action=game_event, text=('25', (0, 0, 0), font))
+    button_i = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
+                      text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
     group.draw(screen)
     enemy_group.draw(screen)
     pygame.display.flip()
@@ -119,7 +121,8 @@ def choice_level_event():
                 click2 = enemy_group.check_any_click(event.pos)
                 if click1[0]:
                     if click1[1] is not None:
-                        click1[1]()
+                        if click1[0] in level_of_list:
+                            click1[1](click1[0])
                     running = False
                     break
                 elif click2[0]:
@@ -161,7 +164,7 @@ def game_event(level=None):
         # r[1] - значение для таблицы рекордов
         start_event()
 
-#
+
 # def start_event():
 #     global screen, width, height
 #     running = True
@@ -211,5 +214,6 @@ def main():
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 550, 800
+    level_of_list = [1]
     screen = pygame.display.set_mode(size)
     main()

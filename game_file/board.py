@@ -54,9 +54,7 @@ class Board:
             create_level(self, level)
             for el in self.level[0]:
                 if el is not None:
-                    self.v_box_sprites.add(el)
-                    self.all_sprites.add(el)
-                    self.box_list.append(el)
+                    el.visible(self)
             self.score += 1
 
         self.timer = 0
@@ -79,7 +77,7 @@ class Board:
         if draw == 1:
             self.draw_aim(aim_coord)
         self.draw_text()
-        if self.stop:
+        if self.stop or (not self.infinite_level and not len(self.box_sprites)):
             return True, self.score
         return False, self.score
 

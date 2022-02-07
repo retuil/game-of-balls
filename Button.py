@@ -6,7 +6,7 @@ from HelpFunction import HelpFunction
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, pos_in_group, *groups, text=False, image=False, color=pygame.Color((0, 0, 0)),
-                 size=[None, None], pos=[None, None], action=False):
+                 size=[None, None], pos=[None, None], action=None):
         super().__init__(())
 
         if text:
@@ -113,12 +113,15 @@ class Button(pygame.sprite.Sprite):
     def check_click_button(self, mouse_pos):
         if self.pos[0] <= mouse_pos[0] <= self.pos[0] + self.width \
                 and self.pos[1] <= mouse_pos[1] <= self.pos[1] + self.height:
-            if self.action:
-                return True, self.action
-            else:
+            if self.action is None:
                 print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
-            return True, None
-        return False, False
+                return True, None
+            else:
+                if self.text[0].isdigit():
+                    return int(self.text[0]), self.action
+                else:
+                    return True, self.action
+        return 0, False
 
     def generate_button(self):
         self.rect = (pygame.Rect(*self.pos, *self.size))

@@ -70,9 +70,7 @@ class Ball(pygame.sprite.Sprite):
                 elif board.score <= len(board.level):
                     for j in board.level[board.score - 1]:
                         if j is not None:
-                            board.v_box_sprites.add(j)
-                            board.all_sprites.add(j)
-                            board.box_list.append(j)
+                            j.visible(board)
                     board.score += 1
                     board.box_sprites.update(board)
 
