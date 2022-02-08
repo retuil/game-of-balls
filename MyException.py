@@ -6,7 +6,7 @@ class ErrorInitSprite(Exception):
     pass
 
 
-class ErrorLoadImage(Exception):
+class LoadError(Exception):
     pass
 
 

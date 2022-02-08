@@ -2,12 +2,13 @@ import pygame
 from Button import Button
 from SortedGroup import SortedGroup
 from MyGroup import MyGroup
+from HelpFunction import HelpFunction
 
 from game_file.board import Board
 from game_file.level import open_level_file
 
 def start_event():
-    global screen, width, height
+    global screen, width, height, main_sound
     screen.fill((0, 0, 0))
     running = True
     enemy_group1 = MyGroup()
@@ -29,6 +30,8 @@ def start_event():
                           text=('Начать', (0, 0, 0), pygame.font.SysFont('arial', 40)))
     enemy_group1.draw(screen)
     pygame.display.flip()
+    main_sound = pygame.mixer.Sound(HelpFunction().load_sound('main_theme.mp3'))
+    main_sound.play(loops=-1)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -169,7 +172,10 @@ def choice_level_event():
 
 
 def game_event(level=None):
-    global screen, width, height
+    global screen, width, height, main_sound
+    main_sound.fadeout(1000)
+    fone_sound = pygame.mixer.Sound(HelpFunction().load_sound('game_fone_musik.mp3'))
+    fone_sound.play(loops=-1)
     level = open_level_file(level)
     board = Board((7, 11), (100, 100), 50, screen, 5, level)
     running = True
@@ -194,6 +200,7 @@ def game_event(level=None):
                     board.motion(*event.pos)
         r = board.render(draw, aim_coord)
         if r[0]:
+            fone_sound.stop()
             break
         pygame.display.flip()
     if r[0]:
@@ -249,6 +256,7 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
+    pygame.mixer.init()
     size = width, height = 550, 800
     screen = pygame.display.set_mode(size)
     main()
