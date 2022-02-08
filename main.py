@@ -14,14 +14,17 @@ def start_event():
     font1 = pygame.font.SysFont('arial', 40)
     text1 = font1.render("Welcome to", True, (119, 221, 119))
     text_x1 = width // 2 - text1.get_width() // 2
-    text_y1 = 100
+    text_y1 = height // 5 - text1.get_height() * 1.5
     screen.blit(text1, (text_x1, text_y1))
     font2 = pygame.font.SysFont('arial', 90)
     text2 = font2.render("GAME OF BALL", True, (66, 255, 0))
     text_x2 = width // 2 - text2.get_width() // 2
-    text_y2 = 160   #сделать универсально положение для разных экранов
+    text_y2 = height // 3 - text1.get_height() * 2
     screen.blit(text2, (text_x2, text_y2))
-    start_button = Button(0, enemy_group1, color=(0, 165, 80), pos=(10, 660), size=(530, 100),
+    b_width = width - 28
+    b_height = height // 8
+    start_button = Button(0, enemy_group1, color=(0, 165, 80), pos=(width // 2 - b_width // 2, height // 1.264),
+                          size=(b_width, b_height),
                           action=choice_mod_event,
                           text=('Начать', (0, 0, 0), pygame.font.SysFont('arial', 40)))
     enemy_group1.draw(screen)
@@ -72,11 +75,14 @@ def choice_mod_event():
     global screen, width, height
     screen.fill((0, 0, 0))
     running = True
-    font = pygame.font.SysFont('arial', 60)
-    group = SortedGroup((0, 80), (20, 170), (500, 110), screen)
-    button_p = Button(0, group, text=('Продолжить игру', (0, 0, 0), font), color=(0, 165, 80), action=in_developing)
-    button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font), action=choice_level_event, color=(0, 165, 80))
-    button_t = Button(2, group, text=('Рекорды', (0, 0, 0), font), color=(0, 165, 80), action=in_developing)
+    font = pygame.font.SysFont('arial', height // 15)
+    group = SortedGroup((0, height // 10), (width // 27.5, height // 4.7), (width - 50, height // 8), screen)
+    button_p = Button(0, group, text=('Продолжить игру', (0, 0, 0), font), color=(0, 165, 80),
+                      action=in_developing)
+    button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font), color=(0, 165, 80),
+                      action=choice_level_event)
+    button_t = Button(2, group, text=('Рекорды', (0, 0, 0), font), color=(0, 165, 80),
+                      action=in_developing)
     group.draw(screen)
     pygame.display.flip()
     while running:
@@ -97,13 +103,13 @@ def choice_level_event():
     global screen, width, height
     screen.fill((0, 0, 0))
     running = True
-    group = SortedGroup([10, 10], [10, 120], [90, 90], screen)
+    group = SortedGroup([width // 30, height // 80], [width // 55, height // 6.6], [width // 6, height // 8.8], screen)
     enemy_group = MyGroup()
 
     font = pygame.font.SysFont('arial', 40)
     text = font.render("Выберите уровень", True, (100, 255, 100))
     text_x = 550 // 2 - text.get_width() // 2
-    text_y = 25
+    text_y = height // 22
     screen.blit(text, (text_x, text_y))
 
     # для создания текста на кнопке необходимо передать аргумент
@@ -135,7 +141,8 @@ def choice_level_event():
     button23 = Button(22, group, color='yellow', text=('23', (0, 0, 0), font), action=in_developing)
     button24 = Button(23, group, color='yellow', text=('24', (0, 0, 0), font), action=in_developing)
     button25 = Button(24, group, color='yellow', text=('25', (0, 0, 0), font), action=in_developing)
-    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(10, 660), size=(530, 100), action=game_event,
+    buttonI = Button(0, enemy_group, color=(11, 218, 81), pos=(width // 55, height // 1.21),
+                     size=(width - width // 24, height // 8), action=game_event,
                      text=('Бесконечный режим', (0, 0, 0), pygame.font.SysFont('arial', 20)))
     group.draw(screen)
     enemy_group.draw(screen)
