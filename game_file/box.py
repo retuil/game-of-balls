@@ -2,25 +2,27 @@ import os
 import sys
 
 import pygame
+from HelpFunction import HelpFunction
 
 
-def load_image(name):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"'{fullname}' error")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
+# def load_image(name):
+#     fullname = os.path.join('data', name)
+#     if not os.path.isfile(fullname):
+#         print(f"'{fullname}' error")
+#         sys.exit()
+#     image = pygame.image.load(fullname)
+#     return image
 
 
 class Box(pygame.sprite.Sprite):
-    image1 = load_image('box_1.png')
-    image2 = load_image('box_2.png')
-    image3 = load_image('box_3.png')
-    image4 = load_image('box_4.png')
-    image5 = load_image('box_5.png')
-    image6 = load_image('box_6.png')
-    image7 = load_image('box_7.png')
+    H = HelpFunction()
+    image1 = H.load_image('box_1.png')
+    image2 = H.load_image('box_2.png')
+    image3 = H.load_image('box_3.png')
+    image4 = H.load_image('box_4.png')
+    image5 = H.load_image('box_5.png')
+    image6 = H.load_image('box_6.png')
+    image7 = H.load_image('box_7.png')
     image = {
         0: image1,
         1: image2,

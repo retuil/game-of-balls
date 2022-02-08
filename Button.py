@@ -9,6 +9,8 @@ class Button(pygame.sprite.Sprite):
                  size=[None, None], pos=[None, None], action=None):
         super().__init__(())
 
+        self.button_sound = pygame.mixer.Sound(HelpFunction().load_sound('button_click_sound.mp3'))
+
         if text:
             self.text = text
         else:
@@ -44,10 +46,7 @@ class Button(pygame.sprite.Sprite):
 
         if self.main_group:
             my_group_size = self.main_group.sprites_size
-            if my_group_size[0] is not None and my_group_size[1] is not None:
-                self.width, self.height = self.size = my_group_size
-            else:
-                raise error_in_size
+            self.width, self.height = self.size = my_group_size
         elif size[0] is not None and size[1] is not None:
             self.width, self.height = self.size = size
         else:
@@ -92,35 +91,17 @@ class Button(pygame.sprite.Sprite):
 
         self.generate_button()
 
-        # self.rect = (pygame.Rect(*self.pos, *self.size))
-        # if not self.image:
-        #     self.image = pygame.Surface(self.size)
-        #     self.image.fill(self.color)
-        # else:
-        #     self.image = pygame.transform.scale(self.image, self.size)
-        #
-        # if self.text:
-        #     text = self.text[0]
-        #     color_text = self.text[1]
-        #     font = self.text[2]
-        #     p_text = font.render(text, True, color_text)
-        #     width_text, height_text = font.size(text)
-        #     if width_text > self.width or height_text > self.height:
-        #         raise TextError('Текст больше кнопки, на которой размещается')
-        #     size_text = ((self.width - width_text) // 2, (self.height - height_text) // 2)
-        #     self.image.blit(p_text, size_text)
 
     def check_click_button(self, mouse_pos):
         if self.pos[0] <= mouse_pos[0] <= self.pos[0] + self.width \
                 and self.pos[1] <= mouse_pos[1] <= self.pos[1] + self.height:
-            if self.action is None:
-                # print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
-                return True, None
+            if self.action:
+                self.button_sound.play()
+                return True, self.action
             else:
-                if self.text[0].isdigit():
-                    return int(self.text[0]), self.action
-                else:
-                    return True, self.action
+                print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
+            self.button_sound.play()
+            return True, None
         return False, False
 
     def generate_button(self):

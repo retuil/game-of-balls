@@ -1,26 +1,32 @@
 import os
 import sys
 from math import sqrt
+from HelpFunction import HelpFunction
 
 import pygame
 
 from game_file.level import next_level
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"'{fullname}' error")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
+# def load_image(name, colorkey=None):
+#     fullname = os.path.join('data', name)
+#     if not os.path.isfile(fullname):
+#         print(f"'{fullname}' error")
+#         sys.exit()
+#     image = pygame.image.load(fullname)
+#     return image
 
 
 class Ball(pygame.sprite.Sprite):
-    image = load_image('ball.png', -1)
+    image = HelpFunction().load_image('ball.png', -1)
 
     def __init__(self, x, y, vx, vy, board, *group):
         super().__init__(*group)
+
+        self.wall_collision_sound = pygame.mixer.Sound(HelpFunction().load_sound('wall_collision_sound.mp3'))
+        self.block_collision_sound = pygame.mixer.Sound(HelpFunction().load_sound('block_collision_sound.mp3'))
+        self.dead_ball_sound = pygame.mixer.Sound(HelpFunction().load_sound('dead_ball.mp3'))
+
         self.image = Ball.image
         self.rect = self.image.get_rect()
 
@@ -41,6 +47,8 @@ class Ball(pygame.sprite.Sprite):
         board.all_sprites.add(self)
         board.balls_sprites.add(self)
 
+
+
     def update(self, c, board):
         self.x1 += self.vx * self.v * c / 1000
         self.y1 += self.vy * self.v * c / 1000
@@ -58,11 +66,14 @@ class Ball(pygame.sprite.Sprite):
             else:
                 self.vx = abs(self.vx)
             self.history.append(None)
+            self.wall_collision_sound.play()
         if pygame.sprite.spritecollideany(self, board.up_horizontal_borders):
             self.vy = abs(self.vy)
             self.history.append(None)
+            self.wall_collision_sound.play()
         if pygame.sprite.spritecollideany(self, board.down_horizontal_borders) or \
                 self.rect.y >= board.top + board.height * board.cell_size + 2 * board.r:
+            self.dead_ball_sound.play()
             self.vx = 0
             self.vy = 0
             self.history.append(None)
@@ -84,6 +95,7 @@ class Ball(pygame.sprite.Sprite):
 
         for box in board.box_list:
             if pygame.sprite.collide_rect(self, box):
+                self.block_collision_sound.play()
                 if self.rect.x + board.r in range(box.rect.x + 1 - board.r, box.rect.x + board.cell_size + 1 + board.r):
                     if self.rect.y <= box.rect.y + board.r + 1:
                         self.vy = -abs(self.vy)
