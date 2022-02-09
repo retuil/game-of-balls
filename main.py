@@ -1,5 +1,6 @@
 import pygame
 import sqlite3
+import os
 from Button import Button
 from SortedGroup import SortedGroup
 from MyGroup import MyGroup
@@ -105,7 +106,7 @@ def records_table():
     text_x = 550 // 2 - text.get_width() // 2
     text_y = 25
     screen.blit(text, (text_x, text_y))
-    connection = sqlite3.connect("database")
+    connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
     cur = connection.cursor()
     result1 = cur.execute("""SELECT score FROM record""").fetchall()
     result = []
@@ -268,9 +269,65 @@ def game_event(level=None):
             break
         pygame.display.flip()
     if r[0]:
-        # r[1] - значение для таблицы рекордов
-        saved = Database(r[1])
-        start_event()
+        if r[1] == 'Win':
+            word = "Это победа, друг!"
+            photo = 'happy.jpg'
+            im = (331, 400)
+            end_window(word, photo, im)
+        elif r[1] == 'lose':
+            word = "Ты проиграл битву, но не войну!"
+            photo = 'sad-cat.jpg'
+            im = (330, 303)
+            end_window(word, photo, im)
+        else:
+            connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
+            cur = connection.cursor()
+            result1 = cur.execute("""SELECT score FROM record""").fetchall()
+            saved = Database(r[1])
+            if r[1] >= int(*result1[0]):
+                word = "Это что? Новый рекорд:" + str(r[1])
+                photo = 'happy.jpg'
+                im = (331, 400)
+                end_window(word, photo, im)
+            else:
+                word = "Ты проиграл битву, но не войну!"
+                photo = 'sad-cat.jpg'
+                im = (330, 303)
+                end_window(word, photo, im)
+            saved = Database(r[1])
+            start_event()
+
+
+def end_window(word, photo, im):
+    global screen, width, height
+    screen.fill((0, 0, 0))
+    running = True
+    font = pygame.font.SysFont('arial', 40)
+    text = font.render(word, True, (100, 255, 100))
+    text_x = 550 // 2 - text.get_width() // 2
+    text_y = 95
+    screen.blit(text, (text_x, text_y))
+    fullname = os.path.join('data', photo)
+    image = pygame.image.load(fullname)
+    image = pygame.transform.scale(image, im)
+    dog_rect = image.get_rect(bottomright=(450, 550))
+    screen.blit(image, dog_rect)
+    group = SortedGroup((0, 80), (20, 730), (500, 110), screen)
+    button_start = Button(0, group, text=('Начальный экран', (0, 0, 0), font), action=start_event, color=(0, 165, 80))
+    group.draw(screen)
+    pygame.display.flip()
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                click = group.check_any_click(event.pos)
+                if click[0]:
+                    running = False
+                    if click[1] is not None:
+                        if click[1]():
+                            running = True
+                    break
 
 
 def end_event():
