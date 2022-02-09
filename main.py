@@ -256,7 +256,7 @@ def main():
 if __name__ == '__main__':
     pygame.init()
     pygame.mixer.init()
-    size = width, height = 550, 800
+    size = width, height = 550, 850
     level_of_list = [1]
     screen = pygame.display.set_mode(size)
     main()
