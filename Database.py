@@ -5,7 +5,7 @@ from SortedGroup import SortedGroup
 
 class Database:
     def __init__(self, saved):
-        self.connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
+        self.connection = sqlite3.connect("database")
         self.cur = self.connection.cursor()
         self.redact(saved)
 
