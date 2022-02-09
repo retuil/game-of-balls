@@ -105,7 +105,7 @@ def records_table():
     text_x = 550 // 2 - text.get_width() // 2
     text_y = 25
     screen.blit(text, (text_x, text_y))
-    connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
+    connection = sqlite3.connect("database")
     cur = connection.cursor()
     result1 = cur.execute("""SELECT score FROM record""").fetchall()
     result = []
