@@ -218,12 +218,13 @@ def game_event(level=None):
                     speed = btn_speed.check_click_button(event.pos)
                     if speed[0]:
                         for ball in board.balls:
-                            ball.v = 850
+                            ball.v = 950
                     elif down[0]:
                         for ball in board.balls:
                             ball.rect.y = ball.y1 = board.top + board.cell_size * (board.height - 0.5)
                             ball.vx = 0
                             ball.vy = abs(ball.vy)
+                            board.balls += [board.balls[0]] * (board.count_balls - len(board.balls))
                     elif cancel[0]:
                         board.stop = True
 
