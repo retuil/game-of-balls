@@ -103,12 +103,13 @@ def records_table():
     running = True
     font = pygame.font.SysFont('arial', 40)
     text = font.render("Таблица рекордов", True, (100, 255, 100))
-    text_x = 550 // 2 - text.get_width() // 2
+    text_x = width // 2 - text.get_width() // 2
     text_y = 25
     screen.blit(text, (text_x, text_y))
     connection = sqlite3.connect("database")
     cur = connection.cursor()
-    result1 = cur.execute("""SELECT score FROM record""").fetchall()
+    result1 = list(cur.execute("""SELECT score FROM record""").fetchall())
+    result1.sort(reverse=True)
     result = []
     text_y = 50
     y = 60
@@ -117,7 +118,7 @@ def records_table():
         result.append(i)
         font = pygame.font.SysFont('arial', 40)
         text = font.render(f"{i}", True, (100, 255, 100))
-        text_x = 550 // 2 - text.get_width() // 2
+        text_x = width // 2 - text.get_width() // 2
         text_y += y
         screen.blit(text, (text_x, text_y))
         result.append(i)
@@ -304,7 +305,7 @@ def end_window(word, photo, im):
     running = True
     font = pygame.font.SysFont('arial', 40)
     text = font.render(word, True, (100, 255, 100))
-    text_x = 550 // 2 - text.get_width() // 2
+    text_x = width // 2 - text.get_width() // 2
     text_y = 95
     screen.blit(text, (text_x, text_y))
     fullname = os.path.join('data', photo)
