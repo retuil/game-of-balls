@@ -11,7 +11,6 @@ from game_file.level import open_level_file
 from HelpFunction import HelpFunction
 
 
-
 def start_event():
     global screen, width, height, main_sound
     screen.fill((0, 0, 0))
