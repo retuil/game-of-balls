@@ -77,11 +77,12 @@ class Board:
         if draw == 1:
             self.draw_aim(aim_coord)
         self.draw_text()
+        if self.stop and not self.infinite_level:
+            return True, "lose"
         if not self.infinite_level and not len(self.box_sprites) and self.check():
+            print(self.score)
             return True, 'Win'
-        elif not self.infinite_level and self.stop:
-            return True, 'lose'
-        elif self.stop or (not self.infinite_level and not len(self.box_sprites) and self.check()):
+        if self.stop and self.infinite_level:
             return True, self.score
         return False, self.score
 
