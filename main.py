@@ -77,9 +77,9 @@ def choice_mod_event():
     running = True
     font = pygame.font.SysFont('arial', 60)
     group = SortedGroup((0, 80), (20, 170), (500, 110), screen)
-    button_p = Button(0, group, text=('Продолжить игру', (0, 0, 0), font), action=in_developing, color=(0, 165, 80))
-    button_s = Button(1, group, text=('Начать новую игру', (0, 0, 0), font),
+    button_s = Button(0, group, text=('Начать новую игру', (0, 0, 0), font),
                       action=choice_level_event, color=(0, 165, 80))
+    button_p = Button(1, group, text=('Продолжить игру', (0, 0, 0), font), action=in_developing, color=(0, 165, 80))
     button_t = Button(2, group, text=('Рекорды', (0, 0, 0), font), action=records_table, color=(0, 165, 80))
     group.draw(screen)
     pygame.display.flip()
