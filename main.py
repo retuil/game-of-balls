@@ -162,10 +162,10 @@ def choice_level_event():
     button = Button(0, group, color='yellow', text=('1', (0, 0, 0), font), action=game_event)
     button2 = Button(1, group, color='yellow', text=('2', (0, 0, 0), font), action=game_event)
     button3 = Button(2, group, color='yellow', text=('3', (0, 0, 0), font), action=game_event)
-    button4 = Button(3, group, color='yellow', text=('4', (0, 0, 0), font), action=in_developing)
-    button5 = Button(4, group, color='yellow', text=('5', (0, 0, 0), font), action=in_developing)
-    button6 = Button(5, group, color='yellow', text=('6', (0, 0, 0), font), action=in_developing)
-    button7 = Button(6, group, color='yellow', text=('7', (0, 0, 0), font), action=in_developing)
+    button4 = Button(3, group, color='yellow', text=('4', (0, 0, 0), font), action=game_event)
+    button5 = Button(4, group, color='yellow', text=('5', (0, 0, 0), font), action=game_event)
+    button6 = Button(5, group, color='yellow', text=('6', (0, 0, 0), font), action=game_event)
+    button7 = Button(6, group, color='yellow', text=('7', (0, 0, 0), font), action=game_event)
     button8 = Button(7, group, color='yellow', text=('8', (0, 0, 0), font), action=in_developing)
     button9 = Button(8, group, color='yellow', text=('9', (0, 0, 0), font), action=in_developing)
     button10 = Button(9, group, color='yellow', text=('10', (0, 0, 0), font), action=in_developing)
@@ -348,6 +348,6 @@ def main():
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 550, 850
-    level_of_list = [1,2,3]
+    level_of_list = [1, 2, 3, 4, 5, 6, 7]
     screen = pygame.display.set_mode(size)
     main()
