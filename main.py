@@ -8,10 +8,12 @@ from Database import Database
 
 from game_file.board import Board
 from game_file.level import open_level_file
+from HelpFunction import HelpFunction
+
 
 
 def start_event():
-    global screen, width, height
+    global screen, width, height, main_sound
     screen.fill((0, 0, 0))
     running = True
     enemy_group1 = MyGroup()
@@ -30,6 +32,8 @@ def start_event():
                           text=('Начать', (0, 0, 0), pygame.font.SysFont('arial', 40)))
     enemy_group1.draw(screen)
     pygame.display.flip()
+    main_sound = pygame.mixer.Sound(HelpFunction().load_sound('main_theme.mp3'))
+    main_sound.play(loops=-1)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -162,10 +166,10 @@ def choice_level_event():
     button = Button(0, group, color='yellow', text=('1', (0, 0, 0), font), action=game_event)
     button2 = Button(1, group, color='yellow', text=('2', (0, 0, 0), font), action=game_event)
     button3 = Button(2, group, color='yellow', text=('3', (0, 0, 0), font), action=game_event)
-    button4 = Button(3, group, color='yellow', text=('4', (0, 0, 0), font), action=in_developing)
-    button5 = Button(4, group, color='yellow', text=('5', (0, 0, 0), font), action=in_developing)
-    button6 = Button(5, group, color='yellow', text=('6', (0, 0, 0), font), action=in_developing)
-    button7 = Button(6, group, color='yellow', text=('7', (0, 0, 0), font), action=in_developing)
+    button4 = Button(3, group, color='yellow', text=('4', (0, 0, 0), font), action=game_event)
+    button5 = Button(4, group, color='yellow', text=('5', (0, 0, 0), font), action=game_event)
+    button6 = Button(5, group, color='yellow', text=('6', (0, 0, 0), font), action=game_event)
+    button7 = Button(6, group, color='yellow', text=('7', (0, 0, 0), font), action=game_event)
     button8 = Button(7, group, color='yellow', text=('8', (0, 0, 0), font), action=in_developing)
     button9 = Button(8, group, color='yellow', text=('9', (0, 0, 0), font), action=in_developing)
     button10 = Button(9, group, color='yellow', text=('10', (0, 0, 0), font), action=in_developing)
@@ -213,7 +217,10 @@ def choice_level_event():
 
 
 def game_event(level=None):
-    global screen, width, height
+    global screen, width, height, main_sound
+    main_sound.fadeout(1000)
+    fone_sound = pygame.mixer.Sound(HelpFunction().load_sound('game_fone_musik.mp3'))
+    fone_sound.play(loops=-1)
     level = open_level_file(level)
     board = Board((7, 11), (100, 100), 50, screen, 5, level)
 
@@ -268,6 +275,7 @@ def game_event(level=None):
         btn_group_1.draw(screen)
         btn_group_2.draw(screen)
         if r[0]:
+            fone_sound.stop()
             break
         pygame.display.flip()
     if r[0]:
@@ -347,7 +355,8 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
+    pygame.mixer.init()
     size = width, height = 550, 850
-    level_of_list = [1,2,3]
+    level_of_list = [1, 2, 3, 4, 5, 6, 7]
     screen = pygame.display.set_mode(size)
     main()
