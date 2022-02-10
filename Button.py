@@ -97,8 +97,10 @@ class Button(pygame.sprite.Sprite):
                 and self.pos[1] <= mouse_pos[1] <= self.pos[1] + self.height:
             if self.action is None:
                 # print('Нажата кнопка номер:', self.pos_in_group + 1, f'({self.text[0]})')
+                self.button_sound.play()
                 return True, None
             else:
+                self.button_sound.play()
                 if self.text[0].isdigit():
                     return int(self.text[0]), self.action
                 else:
