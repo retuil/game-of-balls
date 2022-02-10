@@ -106,7 +106,7 @@ def records_table():
     text_x = 550 // 2 - text.get_width() // 2
     text_y = 25
     screen.blit(text, (text_x, text_y))
-    connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
+    connection = sqlite3.connect("database")
     cur = connection.cursor()
     result1 = cur.execute("""SELECT score FROM record""").fetchall()
     result = []
@@ -139,7 +139,6 @@ def records_table():
                         if click[1]():
                             running = True
                     break
-
 
 
 def choice_level_event():
@@ -204,6 +203,7 @@ def choice_level_event():
                             break
                         else:
                             click1[1]()
+                            break
                 elif click2[0]:
                     if click2[1] is not None:
                         click2[1]()
@@ -269,6 +269,7 @@ def game_event(level=None):
             break
         pygame.display.flip()
     if r[0]:
+        print(r, board.infinite_level)
         if r[1] == 'Win':
             word = "Это победа, друг!"
             photo = 'happy.jpg'
@@ -280,7 +281,7 @@ def game_event(level=None):
             im = (330, 303)
             end_window(word, photo, im)
         else:
-            connection = sqlite3.connect("C:/Users/amali/Downloads/sqlitestudio-3.3.3 (1)/SQLiteStudio/database")
+            connection = sqlite3.connect("database")
             cur = connection.cursor()
             result1 = cur.execute("""SELECT score FROM record""").fetchall()
             saved = Database(r[1])
