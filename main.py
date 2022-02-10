@@ -270,7 +270,6 @@ def game_event(level=None):
             break
         pygame.display.flip()
     if r[0]:
-        print(r, board.infinite_level)
         if r[1] == 'Win':
             word = "Это победа, друг!"
             photo = 'happy.jpg'
@@ -297,7 +296,6 @@ def game_event(level=None):
                 im = (330, 303)
                 end_window(word, photo, im)
             saved = Database(r[1])
-            start_event()
 
 
 def end_window(word, photo, im):
@@ -352,6 +350,3 @@ if __name__ == '__main__':
     level_of_list = [1]
     screen = pygame.display.set_mode(size)
     main()
-
-
-
