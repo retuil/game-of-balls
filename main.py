@@ -298,16 +298,16 @@ def game_event(level=None):
                 word = "Это что? Новый рекорд:" + str(r[1])
                 photo = 'happy.jpg'
                 im = (331, 400)
-                end_window(word, photo, im)
+                end_window(word, photo, im, a=1)
             else:
                 word = "Ты проиграл битву, но не войну!"
                 photo = 'sad-cat.jpg'
                 im = (330, 303)
-                end_window(word, photo, im)
+                end_window(word, photo, im, a=1)
             saved = Database(r[1])
 
 
-def end_window(word, photo, im):
+def end_window(word, photo, im, a=0):
     global screen, width, height
     screen.fill((0, 0, 0))
     running = True
@@ -321,8 +321,11 @@ def end_window(word, photo, im):
     image = pygame.transform.scale(image, im)
     dog_rect = image.get_rect(bottomright=(450, 550))
     screen.blit(image, dog_rect)
-    group = SortedGroup((0, 80), (20, 730), (500, 110), screen)
+    group = SortedGroup([0, 20], [20, 700], [500, 60], screen)
     button_start = Button(0, group, text=('Начальный экран', (0, 0, 0), font), action=start_event, color=(0, 165, 80))
+    if a == 1:
+        button_revers = Button(0, group, text=('Занаво', (0, 0, 0), font), action=game_event,
+                                 color=(0, 165, 80))
     group.draw(screen)
     pygame.display.flip()
     while running:
